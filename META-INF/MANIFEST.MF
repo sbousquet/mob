@@ -1,0 +1,44 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Modular OSGI Box
+Bundle-SymbolicName: com.netappsid.mod;singleton:=true
+Bundle-Version: 0.5.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: 
+ com.netappsid.mod.ejb3;version="2.4.2",
+ com.netappsid.mod.ejb3.annotation;version="2.4.2",
+ com.netappsid.mod.ejb3.io;version="2.4.2",
+ com.netappsid.mod.ejb3.naming;version="2.4.2";uses:="javax.naming,javax.sql,javax.naming.spi",
+ com.netappsid.mod.ejb3.osgi;version="2.4.2",
+ com.netappsid.mod.ejb3.security;version="2.4.2",
+ com.netappsid.mod.ejb3.xml;version="2.4.2"
+Bundle-ClassPath: .
+Eclipse-BuddyPolicy: registered
+Eclipse-ExtensibleAPI: true
+Bundle-Vendor: NetAppsID inc.
+Require-Bundle: com.netappsid.datasource;bundle-version="[2.0.0,2.2.0)",
+ org.apache.log4j;bundle-version="1.2.13",
+ org.objectweb.asm;bundle-version="3.1.0",
+ com.netappsid.org.apache.naming;bundle-version="6.0.20";visibility:=reexport,
+ com.atomikos;bundle-version="3.5.9";visibility:=reexport,
+ org.junit4;bundle-version="4.5.0";resolution:=optional,
+ com.netappsid.test.tools;bundle-version="1.2.0";resolution:=optional
+Import-Package: com.google.common.collect,
+ com.thoughtworks.xstream,
+ com.thoughtworks.xstream.mapper,
+ javassist,
+ javassist.util.proxy,
+ javax.ejb,
+ javax.interceptor,
+ javax.persistence,
+ javax.persistence.spi,
+ javax.transaction,
+ org.dom4j;version="[1.6.0,1.7.0)",
+ org.dom4j.io;version="[1.6.0,1.7.0)",
+ org.eclipse.core.runtime,
+ org.eclipse.core.runtime.spi;version="3.4.0",
+ org.osgi.framework;version="[1.3.0,1.6.0)",
+ org.osgi.service.packageadmin;version="1.2.0"
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: com.netappsid.mod.ejb3.MobPlugin
+

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="com.netappsid.ejb3.deployer" name="EJB3 Deployer" schema="schema/com.netappsid.ejb3.deployer.exsd"/>
+   <extension-point id="com.netappsid.ejb3.jpa.provider" name="JPA Provider" schema="schema/com.netappsid.ejb3.jpa.provider.exsd"/>
+   <extension-point id="com.netappsid.ejb3.persistence.xslt" name="Persistence xml modification" schema="schema/com.netappsid.ejb3.persistence.xslt.exsd"/>
+
+</plugin>

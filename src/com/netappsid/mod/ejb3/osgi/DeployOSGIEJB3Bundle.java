@@ -50,9 +50,9 @@ import com.netappsid.datasource.DataSourceHelper;
 import com.netappsid.mod.ejb3.MobPlugin;
 import com.netappsid.mod.ejb3.internal.EJB3ThreadWorker;
 import com.netappsid.mod.ejb3.internal.EJb3AnnotationVisitor;
-import com.netappsid.mod.ejb3.internal.UserTransactionFactory;
-import com.netappsid.mod.ejb3.internal.UserTransactionRef;
 import com.netappsid.mod.ejb3.internal.classloader.MultiBundleClassLoader;
+import com.netappsid.mod.ejb3.internal.jndi.UserTransactionFactory;
+import com.netappsid.mod.ejb3.internal.jndi.UserTransactionRef;
 import com.netappsid.mod.ejb3.xml.EjbJarXml;
 import com.netappsid.mod.ejb3.xml.PersistenceUnitInfoXml;
 

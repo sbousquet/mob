@@ -24,12 +24,16 @@ public class Pool<T>
 
 	private AtomicInteger count = new AtomicInteger(0);
 
+	private final EJB3LifecycleManager lifecycleManager;
+
 	/**
 	 * @param clazz
+	 * @param lifecycleManager 
 	 */
-	public Pool(Class<T> clazz)
+	public Pool(Class<T> clazz, EJB3LifecycleManager lifecycleManager)
 	{
 		this.beanClass = clazz;
+		this.lifecycleManager = lifecycleManager;
 	}
 
 	/**
@@ -51,7 +55,7 @@ public class Pool<T>
 
 		if (created < sizeLimit.get())
 		{
-			return beanClass.newInstance();
+			return lifecycleManager.create(beanClass);
 		}
 		// the limit is reach
 		else
@@ -68,16 +72,8 @@ public class Pool<T>
 	{
 		if (!availables.offer(toRecycle))
 		{
-			destroy(toRecycle);
+			lifecycleManager.destroy(toRecycle);
 		}
-	}
-
-	/**
-	 * @param toRecycle
-	 */
-	private void destroy(T toRecycle)
-	{
-		//TODO implement detroy
 	}
 
 	/**

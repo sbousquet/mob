@@ -17,4 +17,8 @@ public interface EJb3Service
 	public Class<?> getLocalInterface();
 	public Class<?> getBeanClass();
 	public String getName();
+	/**
+	 * @return
+	 */
+	public Object getProxy();
 }

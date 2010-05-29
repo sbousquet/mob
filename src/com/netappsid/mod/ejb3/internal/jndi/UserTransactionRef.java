@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.netappsid.mod.ejb3.internal;
+package com.netappsid.mod.ejb3.internal.jndi;
 
 import javax.naming.RefAddr;
 import javax.transaction.UserTransaction;

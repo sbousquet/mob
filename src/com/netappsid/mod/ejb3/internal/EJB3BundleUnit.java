@@ -13,8 +13,6 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.naming.Reference;
-import javax.naming.Referenceable;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
@@ -29,7 +27,7 @@ import com.netappsid.mod.ejb3.internal.interceptors.Interceptors;
  * 
  * @version $Revision: 1.10 $
  */
-public class EJB3BundleUnit implements Referenceable
+public class EJB3BundleUnit implements EJB3LifecycleManager
 {
 	private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(EJB3BundleUnit.class);
 
@@ -41,7 +39,7 @@ public class EJB3BundleUnit implements Referenceable
 
 	private EntityManagerFactory managerFactory;
 	
-	private StatelessPool statelessPool = new StatelessPool();
+	private StatelessPool statelessPool = new StatelessPool(this);
 
 	private Interceptors interceptors;
 
@@ -103,7 +101,7 @@ public class EJB3BundleUnit implements Referenceable
 		}
 	}
 
-	protected EntityManager getManager()
+	public EntityManager getManager()
 	{
 
 		EntityManager manager = sessionEntityManagers.get().get(this);
@@ -165,23 +163,27 @@ public class EJB3BundleUnit implements Referenceable
 				EJB ejb = field.getAnnotation(EJB.class);
 				String jndiName = ejb.mappedName();
 
-				if (jndiName == null || jndiName.equals(""))
+				if (jndiName != null && !jndiName.equals(""))
 				{
-					jndiName = getJNDIName(field.getType());
+					try
+					{
+						toInject = new InitialContext().lookup(jndiName);
+					}
+					catch (NamingException e)
+					{
+						logger.error(e, e);
+					}
+				}
+				else
+				{
+					toInject = getEJBService(field.getType());
 				}
 
-				try
-				{
-					toInject = new InitialContext().lookup(jndiName);
-				}
-				catch (NamingException e)
-				{
-					logger.error(e, e);
-				}
+				
 			}
 			else if (field.isAnnotationPresent(PersistenceContext.class))
 			{
-				toInject = getManager();
+				toInject = new TransactionScopedEntityManager(this);
 			}
 			else if (field.isAnnotationPresent(Resource.class))
 			{
@@ -201,6 +203,30 @@ public class EJB3BundleUnit implements Referenceable
 				}
 			}
 
+		}
+	}
+
+	/**
+	 * @param type
+	 * @return
+	 */
+	private Object getEJBService(Class<?> serviceClass)
+	{
+		if (localService.containsKey(serviceClass))
+		{
+			return localService.get(serviceClass).getProxy();
+		}
+		else if (remoteService.containsKey(serviceClass))
+		{
+			return remoteService.get(serviceClass).getProxy();
+		}
+		else if (beanService.containsKey(serviceClass))
+		{
+			return beanService.get(serviceClass).getProxy();
+		}
+		else
+		{
+			return null;
 		}
 	}
 
@@ -289,16 +315,6 @@ public class EJB3BundleUnit implements Referenceable
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.naming.Referenceable#getReference()
-	 */
-	@Override
-	public Reference getReference() throws NamingException
-	{
-		return new EJB3BundleUnitReference(EJB3BundleUnitReference.class.getName(), name);
-	}
 
 	public void flush()
 	{
@@ -333,4 +349,22 @@ public class EJB3BundleUnit implements Referenceable
 	{
 		this.interceptors = interceptors;
 	}
+
+	/* (non-Javadoc)
+	 * @see com.netappsid.mod.ejb3.internal.EJB3LifecycleManager#create(java.lang.Class)
+	 */
+	@Override
+	public <T> T create(Class<T> toCreate) throws InstantiationException, IllegalAccessException
+	{
+		T newInstance = toCreate.newInstance();
+		inject(newInstance);
+		return newInstance;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.netappsid.mod.ejb3.internal.EJB3LifecycleManager#destroy(java.lang.Object)
+	 */
+	@Override
+	public void destroy(Object toDestroy)
+	{}
 }

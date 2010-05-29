@@ -17,13 +17,22 @@ public class StatelessPool
 {
 
 	private Map<Class<?>, Pool<?>> pools = new ConcurrentHashMap<Class<?>, Pool<?>>();
+	private final EJB3LifecycleManager lifecycleManager;
+
+	/**
+	 * @param ejb3BundleUnit
+	 */
+	public StatelessPool(EJB3LifecycleManager lifecycleManager)
+	{
+		this.lifecycleManager = lifecycleManager;
+	}
 
 	/**
 	 * @param class1
 	 */
 	private void registerStatelessBean(Class<?> clazz)
 	{
-		pools.put(clazz, new Pool(clazz));
+		pools.put(clazz, new Pool(clazz,lifecycleManager));
 	}
 
 	public boolean isRegister(Class<?> beanClass)

@@ -34,7 +34,7 @@ public class StatelessPoolTest
 	@Test
 	public void testRegisterStateless() throws InstantiationException, IllegalAccessException, InterruptedException
 	{
-		StatelessPool statelessPool = new StatelessPool();
+		StatelessPool statelessPool = new StatelessPool(new DummyLifecycleManager());
 		statelessPool.get(TestServiceBean.class);
 
 		assertTrue(statelessPool.isRegister(TestServiceBean.class));
@@ -43,7 +43,7 @@ public class StatelessPoolTest
 	@Test
 	public void testCreateStatelessInstance() throws InstantiationException, IllegalAccessException, InterruptedException
 	{
-		StatelessPool statelessPool = new StatelessPool();
+		StatelessPool statelessPool = new StatelessPool(new DummyLifecycleManager());
 
 		TestServiceBean testServiceBean = statelessPool.get(TestServiceBean.class);
 
@@ -53,7 +53,7 @@ public class StatelessPoolTest
 	@Test
 	public void testReuseStatelessInstance() throws InstantiationException, IllegalAccessException, InterruptedException
 	{
-		StatelessPool statelessPool = new StatelessPool();
+		StatelessPool statelessPool = new StatelessPool(new DummyLifecycleManager());
 
 		TestServiceBean testServiceBean = statelessPool.get(TestServiceBean.class);
 
@@ -68,7 +68,7 @@ public class StatelessPoolTest
 	@Test
 	public void testLimitReach() throws InstantiationException, IllegalAccessException, InterruptedException, ExecutionException
 	{
-		StatelessPool statelessPool = new StatelessPool();
+		StatelessPool statelessPool = new StatelessPool(new DummyLifecycleManager());
 		TestServiceBean testServiceBean2 = statelessPool.get(TestServiceBean.class);
 		statelessPool.recycle(testServiceBean2);
 

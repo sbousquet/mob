@@ -26,7 +26,7 @@
  *  
  */
  
-package com.netappsid.mod.ejb3.internal;
+package com.netappsid.mod.ejb3.internal.jndi;
 
 import java.util.Hashtable;
 

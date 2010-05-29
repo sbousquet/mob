@@ -13,6 +13,8 @@ import javax.ejb.Remote;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 
+import com.netappsid.mod.ejb3.internal.jndi.Ejb3Ref;
+
 
 /**
  * @author xjodoin
@@ -47,6 +49,15 @@ public class StatelessService extends AbstractService
 	 */
 	@Override
 	public Object getContent()
+	{
+		return getProxy();
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.netappsid.mod.ejb3.internal.EJb3Service#getProxy()
+	 */
+	@Override
+	public Object getProxy()
 	{
 		try
 		{

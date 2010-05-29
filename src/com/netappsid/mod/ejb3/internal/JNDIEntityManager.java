@@ -1,4 +1,4 @@
-package com.netappsid.mod.ejb3.naming;
+package com.netappsid.mod.ejb3.internal;
 
 import javax.naming.NamingException;
 import javax.naming.RefAddr;
@@ -6,6 +6,7 @@ import javax.naming.Reference;
 import javax.naming.Referenceable;
 import javax.naming.StringRefAddr;
 import javax.persistence.EntityManager;
+
 
 /**
  * 

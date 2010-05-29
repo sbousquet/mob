@@ -1,4 +1,4 @@
-package com.netappsid.mod.ejb3.naming;
+package com.netappsid.mod.ejb3.internal;
 
 import java.net.URL;
 

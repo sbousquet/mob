@@ -17,8 +17,8 @@ import java.util.concurrent.Future;
 import org.junit.After;
 import org.junit.Test;
 
-import com.netappsid.mod.ejb3.Pool;
-import com.netappsid.mod.ejb3.StatelessPool;
+import com.netappsid.mod.ejb3.internal.Pool;
+import com.netappsid.mod.ejb3.internal.StatelessPool;
 import com.netappsid.mod.ejb3.test.beans.TestServiceBean;
 
 /**
@@ -30,17 +30,12 @@ import com.netappsid.mod.ejb3.test.beans.TestServiceBean;
  */
 public class StatelessPoolTest
 {
-	@After
-	public void resetPool()
-	{
-		StatelessPool.reset();
-	}
 
 	@Test
-	public void testRegisterStateless()
+	public void testRegisterStateless() throws InstantiationException, IllegalAccessException, InterruptedException
 	{
-		StatelessPool statelessPool = StatelessPool.getInstance();
-		statelessPool.registerStatelessBean(TestServiceBean.class);
+		StatelessPool statelessPool = new StatelessPool();
+		statelessPool.get(TestServiceBean.class);
 
 		assertTrue(statelessPool.isRegister(TestServiceBean.class));
 	}
@@ -48,8 +43,7 @@ public class StatelessPoolTest
 	@Test
 	public void testCreateStatelessInstance() throws InstantiationException, IllegalAccessException, InterruptedException
 	{
-		StatelessPool statelessPool = StatelessPool.getInstance();
-		statelessPool.registerStatelessBean(TestServiceBean.class);
+		StatelessPool statelessPool = new StatelessPool();
 
 		TestServiceBean testServiceBean = statelessPool.get(TestServiceBean.class);
 
@@ -59,8 +53,7 @@ public class StatelessPoolTest
 	@Test
 	public void testReuseStatelessInstance() throws InstantiationException, IllegalAccessException, InterruptedException
 	{
-		StatelessPool statelessPool = StatelessPool.getInstance();
-		statelessPool.registerStatelessBean(TestServiceBean.class);
+		StatelessPool statelessPool = new StatelessPool();
 
 		TestServiceBean testServiceBean = statelessPool.get(TestServiceBean.class);
 
@@ -75,8 +68,9 @@ public class StatelessPoolTest
 	@Test
 	public void testLimitReach() throws InstantiationException, IllegalAccessException, InterruptedException, ExecutionException
 	{
-		StatelessPool statelessPool = StatelessPool.getInstance();
-		statelessPool.registerStatelessBean(TestServiceBean.class);
+		StatelessPool statelessPool = new StatelessPool();
+		TestServiceBean testServiceBean2 = statelessPool.get(TestServiceBean.class);
+		statelessPool.recycle(testServiceBean2);
 
 		final Pool<TestServiceBean> pool = statelessPool.getPool(TestServiceBean.class);
 		pool.setLimit(1);

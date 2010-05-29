@@ -8,6 +8,8 @@ import com.netappsid.mod.ejb3.test.IdentityTest;
 public interface TestServiceRemote
 {
 
+	void testSleep();
+	
 	IdentityTest testIdentity(IdentityTest identityTest);
 
 	void testMethod();

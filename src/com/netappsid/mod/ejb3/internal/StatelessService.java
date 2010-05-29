@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.netappsid.mod.ejb3.naming;
+package com.netappsid.mod.ejb3.internal;
 
 import java.util.concurrent.ExecutorService;
 
@@ -12,6 +12,7 @@ import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.naming.NamingException;
 import javax.naming.Reference;
+
 
 /**
  * @author xjodoin
@@ -42,7 +43,7 @@ public class StatelessService extends AbstractService
 
 	/**
 	 * @return
-	 * @see com.netappsid.mod.ejb3.naming.EJb3Service#getService()
+	 * @see com.netappsid.mod.ejb3.internal.EJb3Service#getService()
 	 */
 	@Override
 	public Object getContent()

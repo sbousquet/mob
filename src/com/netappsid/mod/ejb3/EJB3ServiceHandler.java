@@ -3,7 +3,7 @@
  */
 package com.netappsid.mod.ejb3;
 
-import com.netappsid.mod.ejb3.naming.EJB3BundleUnit;
+import com.netappsid.mod.ejb3.internal.EJB3BundleUnit;
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.netappsid.mod.ejb3.naming;
+package com.netappsid.mod.ejb3.internal;
 
 import java.util.Hashtable;
 
@@ -9,6 +9,7 @@ import javax.naming.Context;
 import javax.naming.Name;
 import javax.naming.Reference;
 import javax.naming.spi.ObjectFactory;
+
 
 /**
  * @author xjodoin

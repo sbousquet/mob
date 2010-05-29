@@ -20,5 +20,21 @@ public class TestServiceBean implements TestServiceRemote
 	{
 		System.out.println("method");
 	}
+
+	/* (non-Javadoc)
+	 * @see com.netappsid.mod.ejb3.test.beans.TestServiceRemote#testSleep()
+	 */
+	@Override
+	public void testSleep()
+	{
+		try
+		{
+			Thread.sleep(100);
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+	}
 	
 }

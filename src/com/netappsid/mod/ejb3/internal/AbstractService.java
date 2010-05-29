@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.netappsid.mod.ejb3.naming;
+package com.netappsid.mod.ejb3.internal;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.ExecutorService;
@@ -23,7 +23,6 @@ import javax.naming.Referenceable;
 
 import com.netappsid.mod.ejb3.EJB3ServiceHandler;
 import com.netappsid.mod.ejb3.EJBServiceLink;
-import com.netappsid.mod.ejb3.internal.LocalEJBServiceLink;
 
 /**
  * @author xjodoin

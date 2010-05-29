@@ -1,4 +1,4 @@
-package com.netappsid.mod.ejb3.naming;
+package com.netappsid.mod.ejb3.internal;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -40,6 +40,8 @@ public class EJB3BundleUnit implements Referenceable
 	private Map<Class, EJb3Service> beanService = new HashMap<Class, EJb3Service>();
 
 	private EntityManagerFactory managerFactory;
+	
+	private StatelessPool statelessPool = new StatelessPool();
 
 	private Interceptors interceptors;
 
@@ -73,6 +75,14 @@ public class EJB3BundleUnit implements Referenceable
 		{
 			beanService.put(service.getBeanClass(), service);
 		}
+	}
+	
+	/**
+	 * @return the statelessPool
+	 */
+	public StatelessPool getStatelessPool()
+	{
+		return statelessPool;
 	}
 
 	public void removeService(EJb3Service ejb3Service)

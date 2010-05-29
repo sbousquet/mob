@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 import com.netappsid.mod.ejb3.MobPlugin;
-import com.netappsid.mod.ejb3.internal.OSGIClassLoader;
+import com.netappsid.mod.ejb3.internal.classloader.OSGIClassLoader;
 
 /**
  * @author xjodoin

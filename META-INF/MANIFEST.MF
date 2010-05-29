@@ -5,13 +5,11 @@ Bundle-SymbolicName: com.netappsid.mod;singleton:=true
 Bundle-Version: 0.5.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: 
- com.netappsid.mod.ejb3;version="2.4.2",
- com.netappsid.mod.ejb3.annotation;version="2.4.2",
- com.netappsid.mod.ejb3.io;version="2.4.2",
- com.netappsid.mod.ejb3.naming;version="2.4.2";uses:="javax.naming,javax.sql,javax.naming.spi",
- com.netappsid.mod.ejb3.osgi;version="2.4.2",
- com.netappsid.mod.ejb3.security;version="2.4.2",
- com.netappsid.mod.ejb3.xml;version="2.4.2"
+ com.netappsid.mod.ejb3;version="0.5.0",
+ com.netappsid.mod.ejb3.io;version="0.5.0",
+ com.netappsid.mod.ejb3.osgi;version="0.5.0",
+ com.netappsid.mod.ejb3.security;version="0.5.0",
+ com.netappsid.mod.ejb3.xml;version="0.5.0"
 Bundle-ClassPath: .
 Eclipse-BuddyPolicy: registered
 Eclipse-ExtensibleAPI: true
@@ -24,8 +22,6 @@ Require-Bundle: com.netappsid.datasource;bundle-version="[2.0.0,2.2.0)",
  org.junit4;bundle-version="4.5.0";resolution:=optional,
  com.netappsid.test.tools;bundle-version="1.2.0";resolution:=optional
 Import-Package: com.google.common.collect,
- com.thoughtworks.xstream,
- com.thoughtworks.xstream.mapper,
  javassist,
  javassist.util.proxy,
  javax.ejb,

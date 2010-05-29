@@ -24,12 +24,12 @@ import org.eclipse.core.runtime.Status;
 
 import com.netappsid.mod.ejb3.MobPlugin;
 import com.netappsid.mod.ejb3.JPAProvider;
+import com.netappsid.mod.ejb3.internal.BundleUnitManager;
+import com.netappsid.mod.ejb3.internal.EJB3BundleUnit;
+import com.netappsid.mod.ejb3.internal.EJb3Service;
+import com.netappsid.mod.ejb3.internal.JNDIEntityManager;
+import com.netappsid.mod.ejb3.internal.StatelessService;
 import com.netappsid.mod.ejb3.internal.interceptors.Interceptors;
-import com.netappsid.mod.ejb3.naming.BundleUnitManager;
-import com.netappsid.mod.ejb3.naming.EJB3BundleUnit;
-import com.netappsid.mod.ejb3.naming.EJb3Service;
-import com.netappsid.mod.ejb3.naming.JNDIEntityManager;
-import com.netappsid.mod.ejb3.naming.StatelessService;
 import com.netappsid.mod.ejb3.xml.EjbJarXml;
 import com.netappsid.mod.ejb3.xml.PersistenceUnitInfoXml;
 

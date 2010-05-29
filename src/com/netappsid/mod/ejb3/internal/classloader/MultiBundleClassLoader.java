@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.netappsid.mod.ejb3.internal;
+package com.netappsid.mod.ejb3.internal.classloader;
 
 import java.util.Collection;
 import java.util.Iterator;

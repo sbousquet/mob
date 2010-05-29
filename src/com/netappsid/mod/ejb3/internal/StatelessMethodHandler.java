@@ -1,4 +1,4 @@
-package com.netappsid.mod.ejb3.naming;
+package com.netappsid.mod.ejb3.internal;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.ExecutorService;
@@ -7,8 +7,6 @@ import javassist.util.proxy.MethodHandler;
 
 import com.netappsid.mod.ejb3.EJB3ServiceHandler;
 import com.netappsid.mod.ejb3.EJBServiceLink;
-import com.netappsid.mod.ejb3.internal.EJB3ThreadWorker;
-import com.netappsid.mod.ejb3.internal.InvocationHandler;
 
 /**
  * 
@@ -40,8 +38,9 @@ public class StatelessMethodHandler implements MethodHandler, EJB3ServiceHandler
 			return thisMethod.invoke(this, args);
 		}
 		
-		//stateless every time you enter you need to create a new instance
-		Object serviceInstance = serviceClass.newInstance();
+		StatelessPool statelessPool = bundleUnit.getStatelessPool();
+		
+		Object serviceInstance = statelessPool.get(serviceClass);
 
 		final InvocationHandler ejb3Runnable = new InvocationHandler(link, bundleUnit, serviceInstance, thisMethod, args);
 

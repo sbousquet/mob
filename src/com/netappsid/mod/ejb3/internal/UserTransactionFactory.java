@@ -26,7 +26,7 @@
  *  
  */
  
-package com.netappsid.mod.ejb3.naming;
+package com.netappsid.mod.ejb3.internal;
 
 import java.util.Hashtable;
 
@@ -42,9 +42,9 @@ import javax.naming.spi.ObjectFactory;
  * The factory for JNDI lookup of UserTransactionImp objects.
  */
 
-public class TransactionManagerFactory implements ObjectFactory
+public class UserTransactionFactory implements ObjectFactory
 {
-    public TransactionManagerFactory ()
+    public UserTransactionFactory ()
     {
     }
 
@@ -59,7 +59,7 @@ public class TransactionManagerFactory implements ObjectFactory
         if ( obj == null || !(obj instanceof Reference) )
             return null;
         
-        RefAddr ref = ((Reference)obj).get("TransactionManager");
+        RefAddr ref = ((Reference)obj).get("UserTransaction");
 
         return ref.getContent();
 

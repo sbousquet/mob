@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import com.netappsid.mod.ejb3.internal.InvocationHandler;
 import com.netappsid.mod.ejb3.internal.LocalEJBServiceLink;
-import com.netappsid.mod.ejb3.naming.EJB3BundleUnit;
 
 import static org.junit.Assert.*;
 
@@ -94,7 +93,7 @@ public class InvocationHandlerTest
 
 		TestServiceBean testServiceBean = new TestServiceBean();
 		InvocationHandler invocationHandler = new InvocationHandler(new LocalEJBServiceLink(), new EJB3BundleUnit("test"), testServiceBean,
-				TestServiceBean.class.getMethod("testMethodThrowException"), null)
+				TestServiceBean.class.getMethod("testMethodThrowException"), new Object[0])
 			{
 				/*
 				 * (non-Javadoc)

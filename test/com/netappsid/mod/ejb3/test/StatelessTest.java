@@ -11,8 +11,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.netappsid.mod.ejb3.naming.EJB3BundleUnit;
-import com.netappsid.mod.ejb3.naming.StatelessService;
+import com.netappsid.mod.ejb3.internal.EJB3BundleUnit;
+import com.netappsid.mod.ejb3.internal.StatelessService;
 import com.netappsid.mod.ejb3.osgi.DeployOSGIEJB3Bundle;
 import com.netappsid.mod.ejb3.test.beans.TestServiceBean;
 import com.netappsid.mod.ejb3.test.beans.TestServiceRemote;
@@ -55,9 +55,30 @@ public class StatelessTest
 		StatelessService statelessService = new StatelessService(executorService, TestServiceBean.class, ejb3BundleUnit);
 		ejb3BundleUnit.addService(statelessService);
 
-		TestServiceRemote content = (TestServiceRemote) statelessService.getContent();
+		final TestServiceRemote content = (TestServiceRemote) statelessService.getContent();
 
+		
+		Thread thread = new Thread()
+		{
+			public void run() 
+			{
+				content.testSleep();
+			}
+		};
+
+		thread.start();
+		
 		IdentityTest testIdentity = content.testIdentity(new IdentityTest());
+		
+		try
+		{
+			thread.join();
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		
 		IdentityTest testIdentity2 = content.testIdentity(new IdentityTest());
 
 		assertFalse(testIdentity.getIdentity() == testIdentity2.getIdentity());

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.netappsid.mod.ejb3;
+package com.netappsid.mod.ejb3.internal;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;

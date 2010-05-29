@@ -20,9 +20,9 @@ import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Logger;
 
+import com.atomikos.icatch.jta.UserTransactionImp;
 import com.netappsid.mod.ejb3.EJBServiceLink;
 import com.netappsid.mod.ejb3.internal.interceptors.InterceptorHandler;
-import com.netappsid.mod.ejb3.naming.EJB3BundleUnit;
 
 /**
  * @author xjodoin
@@ -216,6 +216,8 @@ public class InvocationHandler implements Callable<Object>
 		}
 		finally
 		{
+			bundleUnit.getStatelessPool().recycle(self);
+			
 			if (isHasStartTransaction())
 			{
 				bundleUnit.close();
@@ -231,7 +233,7 @@ public class InvocationHandler implements Callable<Object>
 	 */
 	protected UserTransaction getUserTransaction() throws NamingException
 	{
-		return (UserTransaction) new InitialContext().lookup("java:/UserTransaction");
+		return new UserTransactionImp();
 	}
 
 	/**

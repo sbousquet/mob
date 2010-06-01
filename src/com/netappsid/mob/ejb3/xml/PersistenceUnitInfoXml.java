@@ -23,6 +23,8 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.eclipse.core.runtime.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Multimap;
 import com.netappsid.mob.ejb3.MobPlugin;
@@ -35,7 +37,7 @@ import com.netappsid.mob.ejb3.MobPlugin;
  */
 public class PersistenceUnitInfoXml implements PersistenceUnitInfo
 {
-	private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(PersistenceUnitInfoXml.class);
+	private static Logger logger = LoggerFactory.getLogger(PersistenceUnitInfoXml.class);
 
 	private ClassLoader classLoader;
 	private String persistenceUnitName;
@@ -75,7 +77,7 @@ public class PersistenceUnitInfoXml implements PersistenceUnitInfo
 			}
 			catch (Exception e)
 			{
-				logger.error(e, e);
+				logger.error(e.getMessage(), e);
 			}
 
 		}
@@ -154,11 +156,11 @@ public class PersistenceUnitInfoXml implements PersistenceUnitInfo
 	{
 		try
 		{
-			return (DataSource) new InitialContext().lookup(jtaDatasoure);
+			return (DataSource) MobPlugin.getService(InitialContext.class).lookup(jtaDatasoure);
 		}
 		catch (NamingException e)
 		{
-			logger.error(e, e);
+			logger.error(e.getMessage(), e);
 		}
 		return null;
 	}

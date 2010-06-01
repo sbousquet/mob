@@ -15,7 +15,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IStatus;
@@ -41,7 +42,7 @@ import com.netappsid.mob.ejb3.xml.PersistenceUnitInfoXml;
  */
 public class EJB3Deployer
 {
-	private static final Logger LOGGER = Logger.getLogger(EJB3Deployer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EJB3Deployer.class);
 
 	private final ExecutorService executorService;
 	private final String baseName;
@@ -112,7 +113,7 @@ public class EJB3Deployer
 		try
 		{
 			final EJB3BundleUnit bundleUnit = new EJB3BundleUnit(baseName);
-			final Context bundleContext = new InitialContext().createSubcontext(baseName);
+			final Context bundleContext = MobPlugin.getService(InitialContext.class).createSubcontext(baseName);
 
 			deployEntities(bundleUnit);
 			deployServices(bundleUnit, bundleContext);
@@ -121,7 +122,7 @@ public class EJB3Deployer
 		}
 		catch (Exception e)
 		{
-			LOGGER.error(e, e);
+			LOGGER.error(e.getMessage(), e);
 		}
 	}
 
@@ -134,14 +135,14 @@ public class EJB3Deployer
 			bundleUnit.close();
 			
 			undeployEntities(bundleUnit);
-			undeployServices(bundleUnit, (Context) new InitialContext().lookup(baseName));
+			undeployServices(bundleUnit, (Context) MobPlugin.getService(InitialContext.class).lookup(baseName));
 
-			new InitialContext().destroySubcontext(baseName);
+			MobPlugin.getService(InitialContext.class).destroySubcontext(baseName);
 			deployed = false;
 		}
 		catch (NamingException e)
 		{
-			LOGGER.error(e, e);
+			LOGGER.error(e.getMessage(), e);
 		}
 	}
 
@@ -173,7 +174,7 @@ public class EJB3Deployer
 
 		if (persistenceUnitInfoXml.getProperties().containsKey("jboss.entity.manager.jndi.name"))
 		{
-			new InitialContext().bind(persistenceUnitInfoXml.getProperties().getProperty("jboss.entity.manager.jndi.name"), new JNDIEntityManager(bundleUnit));
+			MobPlugin.getService(InitialContext.class).bind(persistenceUnitInfoXml.getProperties().getProperty("jboss.entity.manager.jndi.name"), new JNDIEntityManager(bundleUnit));
 		}
 	}
 
@@ -184,7 +185,7 @@ public class EJB3Deployer
 
 		if (persistenceUnitInfoXml.getProperties().containsKey("jboss.entity.manager.jndi.name"))
 		{
-			new InitialContext().unbind(persistenceUnitInfoXml.getProperties().getProperty("jboss.entity.manager.jndi.name"));
+			MobPlugin.getService(InitialContext.class).unbind(persistenceUnitInfoXml.getProperties().getProperty("jboss.entity.manager.jndi.name"));
 		}
 	}
 
@@ -239,7 +240,7 @@ public class EJB3Deployer
 					}
 					catch (Exception e)
 					{
-						LOGGER.error(e, e);
+						LOGGER.error(e.getMessage(), e);
 					}
 				}
 			}

@@ -11,18 +11,18 @@ import org.osgi.framework.Bundle;
  * @author NetAppsID inc.
  * 
  */
-public class BundleDeployer
+public class EJB3BundleDeployer
 {
 	private final Bundle bundle;
 	private final String packageRestriction;
 	private List<Class<?>> ejb3ClassList;
 
-	public BundleDeployer(Bundle bundle, String packageRestriction)
+	public EJB3BundleDeployer(Bundle bundle, String packageRestriction)
 	{
 		this(bundle, packageRestriction, null);
 	}
 
-	public BundleDeployer(Bundle bundle, String packageRestriction, List<Class<?>> ejb3ClassList)
+	public EJB3BundleDeployer(Bundle bundle, String packageRestriction, List<Class<?>> ejb3ClassList)
 	{
 		this.bundle = bundle;
 		this.packageRestriction = packageRestriction;

@@ -6,6 +6,9 @@ package com.netappsid.mob.ejb3.internal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * @author xjodoin
@@ -15,7 +18,7 @@ import java.util.Map;
  */
 public class BundleUnitManager
 {
-	private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(BundleUnitManager.class);
+	private static Logger logger = LoggerFactory.getLogger(BundleUnitManager.class);
 	
 	private static Map<String, EJB3BundleUnit> bundleUnits = new HashMap<String, EJB3BundleUnit>();
 	

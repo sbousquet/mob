@@ -13,6 +13,9 @@ import javax.ejb.Remote;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.netappsid.mob.ejb3.internal.jndi.Ejb3Ref;
 
 
@@ -24,7 +27,7 @@ import com.netappsid.mob.ejb3.internal.jndi.Ejb3Ref;
  */
 public class StatelessService extends AbstractService
 {
-	private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(StatelessService.class);
+	private static Logger logger = LoggerFactory.getLogger(StatelessService.class);
 	private Class<?> serviceClass;
 	private final Class<?> originalClass;
 
@@ -38,7 +41,7 @@ public class StatelessService extends AbstractService
 		}
 		catch (Exception e)
 		{
-			logger.error(e, e);
+			logger.error(e.getMessage(), e);
 		}
 
 	}
@@ -68,11 +71,11 @@ public class StatelessService extends AbstractService
 		}
 		catch (InstantiationException e)
 		{
-			logger.error(e, e);
+			logger.error(e.getMessage(), e);
 		}
 		catch (IllegalAccessException e)
 		{
-			logger.error(e, e);
+			logger.error(e.getMessage(), e);
 		}
 
 		return null;

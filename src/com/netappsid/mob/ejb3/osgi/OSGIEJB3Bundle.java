@@ -4,7 +4,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import com.atomikos.jdbc.AbstractDataSourceBean;
+import com.netappsid.mob.ejb3.MobPlugin;
 import com.netappsid.mob.ejb3.xml.PersistenceUnitInfoXml;
 
 public abstract class OSGIEJB3Bundle
@@ -54,7 +54,6 @@ public abstract class OSGIEJB3Bundle
 		if (isDeployed())
 		{
 			deployer.undeploy();
-			unbindDataSource();
 			deployer = null;
 		}
 	}
@@ -73,7 +72,7 @@ public abstract class OSGIEJB3Bundle
 	{
 		if (isDeployed())
 		{
-			return (T) new InitialContext().lookup(bundleName + "/" + name);
+			return (T) MobPlugin.getService(InitialContext.class).lookup(bundleName + "/" + name);
 		}
 		else
 		{
@@ -83,16 +82,9 @@ public abstract class OSGIEJB3Bundle
 	
 	private void bindDataSource() throws NamingException
 	{
-		new InitialContext().bind(persistenceUnitInfo.getJtaDatasoure(), datasource);
+		MobPlugin.getService(InitialContext.class).bind(persistenceUnitInfo.getJtaDatasoure(), datasource);
 	}
 	
-	private void unbindDataSource() throws NamingException
-	{
-		final AbstractDataSourceBean dataSource = (AbstractDataSourceBean) new InitialContext().lookup(persistenceUnitInfo.getJtaDatasoure());
-		
-		dataSource.close();
-		new InitialContext().unbind(persistenceUnitInfo.getJtaDatasoure());
-	}
 	
 	private EJB3Deployer createEJB3Deployer()
 	{

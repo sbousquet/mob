@@ -6,16 +6,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.netappsid.mob.ejb3.osgi.BundleDeployer;
 import com.netappsid.mob.ejb3.osgi.DeployOSGIEJB3Bundle;
+import com.netappsid.mob.ejb3.osgi.EJB3BundleDeployer;
 
 /**
  * 
@@ -26,9 +27,9 @@ public class MobPlugin extends Plugin
 {
 	private static MobPlugin instance;
 
-	private static Logger logger = Logger.getLogger(MobPlugin.class);
+	private static Logger logger = LoggerFactory.getLogger(MobPlugin.class);
 
-	private Map<String, List<BundleDeployer>> applicationBundleDeployers = new HashMap<String, List<BundleDeployer>>();
+	private Map<String, List<EJB3BundleDeployer>> applicationBundleDeployers = new HashMap<String, List<EJB3BundleDeployer>>();
 	private RemoteServicesRegistry remoteServicesRegistry = new RemoteServicesRegistry();
 
 	public static MobPlugin getInstance()
@@ -41,7 +42,7 @@ public class MobPlugin extends Plugin
 		return instance.applicationBundleDeployers.keySet();
 	}
 
-	public static List<BundleDeployer> getApplicationBundleDeployers(String applicationName)
+	public static List<EJB3BundleDeployer> getApplicationBundleDeployers(String applicationName)
 	{
 		return instance.applicationBundleDeployers.get(applicationName);
 	}
@@ -59,9 +60,10 @@ public class MobPlugin extends Plugin
 		MobPlugin.instance = this;
 		initializeApplicationBundleDeployers();
 
-		if ("server".equals(System.getProperty("naid.mode")) || "standalone".equals(System.getProperty("naid.mode")) || "true".equals(System.getProperty("naid.dev")))
+		if ("server".equals(System.getProperty("naid.mode")) || "standalone".equals(System.getProperty("naid.mode"))
+				|| "true".equals(System.getProperty("naid.dev")))
 		{
-			for (Map.Entry<String, List<BundleDeployer>> entry : applicationBundleDeployers.entrySet())
+			for (Map.Entry<String, List<EJB3BundleDeployer>> entry : applicationBundleDeployers.entrySet())
 			{
 				DeployOSGIEJB3Bundle.deploy(entry.getKey(), entry.getValue());
 			}
@@ -75,11 +77,11 @@ public class MobPlugin extends Plugin
 			final String applicationName = configurationElement.getAttribute("applicationName");
 			final String packageRestriction = configurationElement.getAttribute("packageRestriction");
 			final Bundle bundle = Platform.getBundle(configurationElement.getContributor().getName());
-			
-			//extra classes
+
+			// extra classes
 			IConfigurationElement[] children = configurationElement.getChildren("extra");
 			List<Class<?>> extraClasses = new ArrayList<Class<?>>();
-			
+
 			for (IConfigurationElement iConfigurationElement : children)
 			{
 				String ejbClass = iConfigurationElement.getAttribute("ejbClass");
@@ -89,15 +91,15 @@ public class MobPlugin extends Plugin
 				}
 				catch (ClassNotFoundException e)
 				{
-					logger.error(e, e);
+					logger.error(e.getMessage(), e);
 				}
 			}
-			
-			final BundleDeployer deployer = new BundleDeployer(bundle, packageRestriction,extraClasses);
+
+			final EJB3BundleDeployer deployer = new EJB3BundleDeployer(bundle, packageRestriction, extraClasses);
 
 			if (!applicationBundleDeployers.containsKey(applicationName))
 			{
-				applicationBundleDeployers.put(applicationName, new ArrayList<BundleDeployer>());
+				applicationBundleDeployers.put(applicationName, new ArrayList<EJB3BundleDeployer>());
 			}
 
 			applicationBundleDeployers.get(applicationName).add(deployer);
@@ -111,8 +113,13 @@ public class MobPlugin extends Plugin
 
 	public static PackageAdmin getPackageAdmin()
 	{
+		return getService(PackageAdmin.class);
+	}
+
+	public static <T> T getService(Class<T> seviceInterface)
+	{
 		BundleContext bundleContext = instance.getBundle().getBundleContext();
-		return (PackageAdmin) bundleContext.getService(bundleContext.getServiceReference(PackageAdmin.class.getName()));
+		return (T) bundleContext.getService(bundleContext.getServiceReference(seviceInterface.getName()));
 	}
 
 }

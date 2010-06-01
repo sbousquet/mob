@@ -6,14 +6,12 @@ import javax.naming.Context;
 import javax.naming.RefAddr;
 import javax.naming.Reference;
 
-import org.apache.naming.EJB3Reference;
-
 /**
  * Represents a reference address to an EJB3 service.
  * 
  */
 
-public class Ejb3Ref extends Reference implements EJB3Reference
+public class Ejb3Ref extends Reference
 {
 
 	// -------------------------------------------------------------- Constants

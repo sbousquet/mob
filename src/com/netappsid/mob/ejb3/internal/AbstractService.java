@@ -6,20 +6,16 @@ package com.netappsid.mob.ejb3.internal;
 import java.lang.reflect.Method;
 import java.util.concurrent.ExecutorService;
 
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtField;
-import javassist.CtMethod;
-import javassist.CtNewMethod;
-import javassist.LoaderClassPath;
 import javassist.Modifier;
-import javassist.CtField.Initializer;
 import javassist.util.proxy.MethodFilter;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 
 import javax.naming.RefAddr;
 import javax.naming.Referenceable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.netappsid.mob.ejb3.EJB3ServiceHandler;
 import com.netappsid.mob.ejb3.EJBServiceLink;
@@ -32,7 +28,7 @@ import com.netappsid.mob.ejb3.EJBServiceLink;
  */
 public abstract class AbstractService extends RefAddr implements EJb3Service, Referenceable
 {
-	private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(AbstractService.class);
+	private static Logger logger = LoggerFactory.getLogger(AbstractService.class);
 
 	private EJBServiceLink ejbLink;
 

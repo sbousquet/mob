@@ -7,7 +7,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.netappsid.mob.ejb3.EJBServiceLink;
 import com.netappsid.mob.ejb3.io.OSGIClassResolver;
@@ -25,7 +26,7 @@ import com.netappsid.mob.ejb3.io.OSGIObjectOutputStream;
 public class LocalEJBServiceLink implements EJBServiceLink
 {
 
-	private static final Logger LOGGER = Logger.getLogger(LocalEJBServiceLink.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LocalEJBServiceLink.class);
 	/* (non-Javadoc)
 	 * @see com.netappsid.ejb3.EJBServiceLink#enter(java.lang.Object[])
 	 */
@@ -38,7 +39,7 @@ public class LocalEJBServiceLink implements EJBServiceLink
 		}
 		catch (Exception e)
 		{
-			LOGGER.error(e, e);
+			LOGGER.error(e.getMessage(), e);
 		}
 		return null;
 	}
@@ -55,7 +56,7 @@ public class LocalEJBServiceLink implements EJBServiceLink
 		}
 		catch (Exception e)
 		{
-			LOGGER.error(e, e);
+			LOGGER.error(e.getMessage(), e);
 		}
 		return null;
 	}

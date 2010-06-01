@@ -7,6 +7,9 @@ import javax.naming.Referenceable;
 import javax.naming.StringRefAddr;
 import javax.persistence.EntityManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.netappsid.mob.ejb3.internal.EJB3BundleUnit;
 
 
@@ -19,7 +22,7 @@ import com.netappsid.mob.ejb3.internal.EJB3BundleUnit;
  */
 public class JNDIEntityManager implements Referenceable
 {
-	private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JNDIEntityManager.class);
+	private static Logger logger = LoggerFactory.getLogger(JNDIEntityManager.class);
 	private final EJB3BundleUnit bundleUnit;
 
 	public JNDIEntityManager(EJB3BundleUnit bundleUnit)

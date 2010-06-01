@@ -9,7 +9,8 @@ import java.util.HashMap;
 
 import javax.security.auth.Subject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -41,7 +42,7 @@ import org.apache.log4j.Logger;
  */
 public final class SecurityAssociation
 {
-   private static Logger log = Logger.getLogger(SecurityAssociation.class);
+   private static Logger log = LoggerFactory.getLogger(SecurityAssociation.class);
    /**
     * A flag indicating if trace level logging should be performed
     */

@@ -13,15 +13,15 @@ import java.util.concurrent.Callable;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.interceptor.InvocationContext;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.atomikos.icatch.jta.UserTransactionImp;
 import com.netappsid.mob.ejb3.EJBServiceLink;
+import com.netappsid.mob.ejb3.MobPlugin;
 import com.netappsid.mob.ejb3.internal.interceptors.InterceptorHandler;
 
 /**
@@ -34,7 +34,7 @@ import com.netappsid.mob.ejb3.internal.interceptors.InterceptorHandler;
 public class InvocationHandler implements Callable<Object>
 {
 
-	private static Logger logger = Logger.getLogger(InvocationHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(InvocationHandler.class);
 
 	private EJBServiceLink link;
 
@@ -204,7 +204,7 @@ public class InvocationHandler implements Callable<Object>
 		}
 		catch (Exception e)
 		{
-			logger.error(e, e);
+			logger.error(e.getMessage(),e);
 
 			//you want to rollback only when you has start the transaction 
 			if (isHasStartTransaction())
@@ -233,7 +233,7 @@ public class InvocationHandler implements Callable<Object>
 	 */
 	protected UserTransaction getUserTransaction() throws NamingException
 	{
-		return new UserTransactionImp();
+		return MobPlugin.getService(UserTransaction.class);
 	}
 
 	/**
@@ -270,7 +270,7 @@ public class InvocationHandler implements Callable<Object>
 		catch (Exception exc)
 		{
 			// I will assume, if an error occurs that the transaction is required
-			logger.debug(exc, exc);
+			logger.debug(exc.getMessage(), exc);
 		}
 		return result;
 	}

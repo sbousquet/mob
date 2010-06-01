@@ -16,7 +16,12 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.netappsid.mob.ejb3.MobPlugin;
 import com.netappsid.mob.ejb3.internal.interceptors.InterceptorHandler;
 import com.netappsid.mob.ejb3.internal.interceptors.Interceptors;
 
@@ -29,7 +34,7 @@ import com.netappsid.mob.ejb3.internal.interceptors.Interceptors;
  */
 public class EJB3BundleUnit implements EJB3LifecycleManager
 {
-	private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(EJB3BundleUnit.class);
+	private static Logger logger = LoggerFactory.getLogger(EJB3BundleUnit.class);
 
 	private String name;
 
@@ -117,7 +122,7 @@ public class EJB3BundleUnit implements EJB3LifecycleManager
 		}
 		catch (IllegalStateException e)
 		{
-			logger.error(e, e);
+			logger.error(e.getMessage(), e);
 		}
 
 		return manager;
@@ -167,11 +172,11 @@ public class EJB3BundleUnit implements EJB3LifecycleManager
 				{
 					try
 					{
-						toInject = new InitialContext().lookup(jndiName);
+						toInject = MobPlugin.getService(InitialContext.class).lookup(jndiName);
 					}
 					catch (NamingException e)
 					{
-						logger.error(e, e);
+						logger.error(e.getMessage(), e);
 					}
 				}
 				else
@@ -184,6 +189,10 @@ public class EJB3BundleUnit implements EJB3LifecycleManager
 			else if (field.isAnnotationPresent(PersistenceContext.class))
 			{
 				toInject = new TransactionScopedEntityManager(this);
+			}
+			else if (field.isAnnotationPresent(PersistenceUnit.class))
+			{
+				toInject = managerFactory;
 			}
 			else if (field.isAnnotationPresent(Resource.class))
 			{
@@ -199,7 +208,7 @@ public class EJB3BundleUnit implements EJB3LifecycleManager
 				}
 				catch (Exception e)
 				{
-					logger.error(e, e);
+					logger.error(e.getMessage(), e);
 				}
 			}
 

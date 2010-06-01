@@ -4,6 +4,8 @@
 package com.netappsid.mob.ejb3.internal.classloader;
 
 import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author xjodoin
@@ -15,7 +17,7 @@ import org.osgi.framework.Bundle;
  */
 public class OSGIClassLoader extends ClassLoader
 {
-	private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(OSGIClassLoader.class);
+	private static Logger logger = LoggerFactory.getLogger(OSGIClassLoader.class);
 	private final Bundle bundle;
 	
 	public OSGIClassLoader(Bundle bundle)

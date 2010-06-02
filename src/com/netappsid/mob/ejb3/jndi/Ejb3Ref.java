@@ -1,4 +1,4 @@
-package com.netappsid.mob.ejb3.internal.jndi;
+package com.netappsid.mob.ejb3.jndi;
 
 import java.net.URL;
 
@@ -19,7 +19,7 @@ public class Ejb3Ref extends Reference
 	/**
 	 * Default factory for this reference.
 	 */
-	public static final String DEFAULT_FACTORY = "com.netappsid.ejb3.naming.Ejb3Factory";
+	public static final String DEFAULT_FACTORY = Ejb3Factory.class.getName();
 
 	// ----------------------------------------------------------- Constructors
 

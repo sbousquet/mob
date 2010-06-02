@@ -1,4 +1,4 @@
-package com.netappsid.mob.ejb3.internal.jndi;
+package com.netappsid.mob.ejb3.jndi;
 
 import javax.naming.NamingException;
 import javax.naming.RefAddr;

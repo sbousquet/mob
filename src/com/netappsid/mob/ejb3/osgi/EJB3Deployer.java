@@ -6,22 +6,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.netappsid.mob.ejb3.JPAProvider;
 import com.netappsid.mob.ejb3.MobPlugin;
@@ -30,7 +29,7 @@ import com.netappsid.mob.ejb3.internal.EJB3BundleUnit;
 import com.netappsid.mob.ejb3.internal.EJb3Service;
 import com.netappsid.mob.ejb3.internal.StatelessService;
 import com.netappsid.mob.ejb3.internal.interceptors.Interceptors;
-import com.netappsid.mob.ejb3.internal.jndi.JNDIEntityManager;
+import com.netappsid.mob.ejb3.jndi.JNDIEntityManager;
 import com.netappsid.mob.ejb3.xml.EjbJarXml;
 import com.netappsid.mob.ejb3.xml.PersistenceUnitInfoXml;
 
@@ -113,7 +112,7 @@ public class EJB3Deployer
 		try
 		{
 			final EJB3BundleUnit bundleUnit = new EJB3BundleUnit(baseName);
-			final Context bundleContext = MobPlugin.getService(InitialContext.class).createSubcontext(baseName);
+			final Context bundleContext = MobPlugin.getService(Context.class).createSubcontext(baseName);
 
 			deployEntities(bundleUnit);
 			deployServices(bundleUnit, bundleContext);
@@ -135,9 +134,9 @@ public class EJB3Deployer
 			bundleUnit.close();
 			
 			undeployEntities(bundleUnit);
-			undeployServices(bundleUnit, (Context) MobPlugin.getService(InitialContext.class).lookup(baseName));
+			undeployServices(bundleUnit, (Context) MobPlugin.getService(Context.class).lookup(baseName));
 
-			MobPlugin.getService(InitialContext.class).destroySubcontext(baseName);
+			MobPlugin.getService(Context.class).destroySubcontext(baseName);
 			deployed = false;
 		}
 		catch (NamingException e)
@@ -174,7 +173,7 @@ public class EJB3Deployer
 
 		if (persistenceUnitInfoXml.getProperties().containsKey("jboss.entity.manager.jndi.name"))
 		{
-			MobPlugin.getService(InitialContext.class).bind(persistenceUnitInfoXml.getProperties().getProperty("jboss.entity.manager.jndi.name"), new JNDIEntityManager(bundleUnit));
+			MobPlugin.getService(Context.class).bind(persistenceUnitInfoXml.getProperties().getProperty("jboss.entity.manager.jndi.name"), new JNDIEntityManager(bundleUnit));
 		}
 	}
 
@@ -185,7 +184,7 @@ public class EJB3Deployer
 
 		if (persistenceUnitInfoXml.getProperties().containsKey("jboss.entity.manager.jndi.name"))
 		{
-			MobPlugin.getService(InitialContext.class).unbind(persistenceUnitInfoXml.getProperties().getProperty("jboss.entity.manager.jndi.name"));
+			MobPlugin.getService(Context.class).unbind(persistenceUnitInfoXml.getProperties().getProperty("jboss.entity.manager.jndi.name"));
 		}
 	}
 
@@ -286,7 +285,7 @@ public class EJB3Deployer
 			return (JPAProvider) configurationElement.createExecutableExtension("class");
 		}
 
-		throw new CoreException(new Status(IStatus.ERROR, MobPlugin.getInstance().getBundle().getSymbolicName(),
+		throw new CoreException(new Status(IStatus.ERROR, MobPlugin.getInstance().getContext().getBundle().getSymbolicName(),
 				"No extension for com.netappsid.ejb3.jpa.provider present."));
 	}
 

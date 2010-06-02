@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import javax.naming.InitialContext;
+import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.persistence.spi.ClassTransformer;
 import javax.persistence.spi.PersistenceUnitInfo;
@@ -54,8 +54,8 @@ public class PersistenceUnitInfoXml implements PersistenceUnitInfo
 
 	public void fromInputStream(InputStream inputStream) throws DocumentException
 	{
-		fromInputStream(inputStream, PersistenceUnitUtils.getXsltResourcesByPersistenceUnit(Platform.getExtensionRegistry(), MobPlugin.getInstance()
-				.getBundle().getBundleContext()));
+		fromInputStream(inputStream,
+				PersistenceUnitUtils.getXsltResourcesByPersistenceUnit(Platform.getExtensionRegistry(), MobPlugin.getInstance().getContext()));
 	}
 
 	public void fromInputStream(InputStream inputStream, Multimap<String, URL> xsltByUnitName) throws DocumentException
@@ -156,7 +156,7 @@ public class PersistenceUnitInfoXml implements PersistenceUnitInfo
 	{
 		try
 		{
-			return (DataSource) MobPlugin.getService(InitialContext.class).lookup(jtaDatasoure);
+			return (DataSource) MobPlugin.getService(Context.class).lookup(jtaDatasoure);
 		}
 		catch (NamingException e)
 		{

@@ -1,6 +1,6 @@
 package com.netappsid.mob.ejb3.osgi;
 
-import javax.naming.InitialContext;
+import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
@@ -72,7 +72,7 @@ public abstract class OSGIEJB3Bundle
 	{
 		if (isDeployed())
 		{
-			return (T) MobPlugin.getService(InitialContext.class).lookup(bundleName + "/" + name);
+			return (T) MobPlugin.getService(Context.class).lookup(bundleName + "/" + name);
 		}
 		else
 		{
@@ -82,7 +82,7 @@ public abstract class OSGIEJB3Bundle
 	
 	private void bindDataSource() throws NamingException
 	{
-		MobPlugin.getService(InitialContext.class).bind(persistenceUnitInfo.getJtaDatasoure(), datasource);
+		MobPlugin.getService(Context.class).bind(persistenceUnitInfo.getJtaDatasoure(), datasource);
 	}
 	
 	

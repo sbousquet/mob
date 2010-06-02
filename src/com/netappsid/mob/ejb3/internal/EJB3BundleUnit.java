@@ -11,7 +11,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.naming.InitialContext;
+import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -43,7 +43,7 @@ public class EJB3BundleUnit implements EJB3LifecycleManager
 	private Map<Class, EJb3Service> beanService = new HashMap<Class, EJb3Service>();
 
 	private EntityManagerFactory managerFactory;
-	
+
 	private StatelessPool statelessPool = new StatelessPool(this);
 
 	private Interceptors interceptors;
@@ -79,7 +79,7 @@ public class EJB3BundleUnit implements EJB3LifecycleManager
 			beanService.put(service.getBeanClass(), service);
 		}
 	}
-	
+
 	/**
 	 * @return the statelessPool
 	 */
@@ -172,7 +172,7 @@ public class EJB3BundleUnit implements EJB3LifecycleManager
 				{
 					try
 					{
-						toInject = MobPlugin.getService(InitialContext.class).lookup(jndiName);
+						toInject = MobPlugin.getService(Context.class).lookup(jndiName);
 					}
 					catch (NamingException e)
 					{
@@ -184,7 +184,6 @@ public class EJB3BundleUnit implements EJB3LifecycleManager
 					toInject = getEJBService(field.getType());
 				}
 
-				
 			}
 			else if (field.isAnnotationPresent(PersistenceContext.class))
 			{
@@ -324,7 +323,6 @@ public class EJB3BundleUnit implements EJB3LifecycleManager
 
 	}
 
-
 	public void flush()
 	{
 		Collection<EntityManager> values = sessionEntityManagers.get().values();
@@ -333,11 +331,11 @@ public class EJB3BundleUnit implements EJB3LifecycleManager
 			entityManager.flush();
 		}
 	}
-	
+
 	public List<String> getServicesNames()
 	{
-		List<String>names = new ArrayList<String>();
-		
+		List<String> names = new ArrayList<String>();
+
 		for (Class<?> clazz : beanService.keySet())
 		{
 			names.add(clazz.getSimpleName());
@@ -359,7 +357,9 @@ public class EJB3BundleUnit implements EJB3LifecycleManager
 		this.interceptors = interceptors;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.netappsid.mod.ejb3.internal.EJB3LifecycleManager#create(java.lang.Class)
 	 */
 	@Override
@@ -370,7 +370,9 @@ public class EJB3BundleUnit implements EJB3LifecycleManager
 		return newInstance;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.netappsid.mod.ejb3.internal.EJB3LifecycleManager#destroy(java.lang.Object)
 	 */
 	@Override

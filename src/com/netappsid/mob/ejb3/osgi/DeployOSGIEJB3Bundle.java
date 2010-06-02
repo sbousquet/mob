@@ -43,8 +43,8 @@ import com.netappsid.mob.ejb3.MobPlugin;
 import com.netappsid.mob.ejb3.internal.EJB3ThreadWorker;
 import com.netappsid.mob.ejb3.internal.EJb3AnnotationVisitor;
 import com.netappsid.mob.ejb3.internal.classloader.MultiBundleClassLoader;
-import com.netappsid.mob.ejb3.internal.jndi.UserTransactionFactory;
-import com.netappsid.mob.ejb3.internal.jndi.UserTransactionRef;
+import com.netappsid.mob.ejb3.jndi.UserTransactionFactory;
+import com.netappsid.mob.ejb3.jndi.UserTransactionRef;
 import com.netappsid.mob.ejb3.xml.EjbJarXml;
 import com.netappsid.mob.ejb3.xml.PersistenceUnitInfoXml;
 
@@ -158,7 +158,7 @@ public class DeployOSGIEJB3Bundle
 
 				try
 				{
-					Context javaContext = MobPlugin.getService(InitialContext.class);
+					Context javaContext = MobPlugin.getService(Context.class);
 					try
 					{
 						javaContext = (Context) javaContext.lookup("java:");

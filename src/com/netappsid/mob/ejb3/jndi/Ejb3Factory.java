@@ -1,5 +1,5 @@
 
-package com.netappsid.mob.ejb3.internal.jndi;
+package com.netappsid.mob.ejb3.jndi;
 
 import java.util.Hashtable;
 

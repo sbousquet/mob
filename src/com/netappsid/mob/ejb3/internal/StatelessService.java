@@ -16,7 +16,7 @@ import javax.naming.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.netappsid.mob.ejb3.internal.jndi.Ejb3Ref;
+import com.netappsid.mob.ejb3.jndi.Ejb3Ref;
 
 
 /**

@@ -8,8 +8,8 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ import com.netappsid.mob.ejb3.osgi.EJB3BundleDeployer;
  * @author NetAppsID Inc.
  * 
  */
-public class MobPlugin extends Plugin
+public class MobPlugin implements BundleActivator
 {
 	private static MobPlugin instance;
 
@@ -31,6 +31,16 @@ public class MobPlugin extends Plugin
 
 	private Map<String, List<EJB3BundleDeployer>> applicationBundleDeployers = new HashMap<String, List<EJB3BundleDeployer>>();
 	private RemoteServicesRegistry remoteServicesRegistry = new RemoteServicesRegistry();
+
+	private BundleContext context;
+
+	/**
+	 * 
+	 */
+	public MobPlugin()
+	{
+		MobPlugin.instance = this;
+	}
 
 	public static MobPlugin getInstance()
 	{
@@ -55,20 +65,23 @@ public class MobPlugin extends Plugin
 	@Override
 	public void start(BundleContext context) throws Exception
 	{
-		super.start(context);
-
-		MobPlugin.instance = this;
+		this.context = context;
 		initializeApplicationBundleDeployers();
 
-		if ("server".equals(System.getProperty("naid.mode")) || "standalone".equals(System.getProperty("naid.mode"))
-				|| "true".equals(System.getProperty("naid.dev")))
+		for (Map.Entry<String, List<EJB3BundleDeployer>> entry : applicationBundleDeployers.entrySet())
 		{
-			for (Map.Entry<String, List<EJB3BundleDeployer>> entry : applicationBundleDeployers.entrySet())
-			{
-				DeployOSGIEJB3Bundle.deploy(entry.getKey(), entry.getValue());
-			}
+			DeployOSGIEJB3Bundle.deploy(entry.getKey(), entry.getValue());
 		}
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 */
+	@Override
+	public void stop(BundleContext context) throws Exception
+	{}
 
 	private void initializeApplicationBundleDeployers()
 	{
@@ -118,8 +131,16 @@ public class MobPlugin extends Plugin
 
 	public static <T> T getService(Class<T> seviceInterface)
 	{
-		BundleContext bundleContext = instance.getBundle().getBundleContext();
+		BundleContext bundleContext = instance.getContext();
 		return (T) bundleContext.getService(bundleContext.getServiceReference(seviceInterface.getName()));
+	}
+
+	/**
+	 * @return the context
+	 */
+	public BundleContext getContext()
+	{
+		return context;
 	}
 
 }

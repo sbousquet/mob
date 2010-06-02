@@ -3,7 +3,6 @@
  */
 package com.netappsid.mob.ejb3.io;
 
-import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 import com.netappsid.mob.ejb3.MobPlugin;

@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -74,75 +75,75 @@ public class DeployOSGIEJB3Bundle
 	{
 		if (!isInit)
 		{
-//			try
-//			{
-//				NamingManager.setInitialContextFactoryBuilder(new InitialContextFactoryBuilder()
-//					{
-//
-//						@Override
-//						public InitialContextFactory createInitialContextFactory(Hashtable<?, ?> environment) throws NamingException
-//						{
-//							String factory = (String) environment.get("java.naming.factory.initial");
-//							if (factory != null)
-//							{
-//								if (factory.equals(javaURLContextFactory.class.getName()))
-//								{
-//									return new org.apache.naming.java.javaURLContextFactory();
-//								}
-//								else
-//								{
-//									PackageAdmin packageAdmin = MobPlugin.getPackageAdmin();
-//									try
-//									{
-//										return (InitialContextFactory) packageAdmin.getExportedPackage(factory.substring(0, factory.lastIndexOf('.')))
-//												.getExportingBundle().loadClass(factory).newInstance();
-//									}
-//									catch (Exception e)
-//									{
-//										logger.error(e, e);
-//									}
-//								}
-//							}
-//							return new org.apache.naming.java.javaURLContextFactory();
-//						}
-//					});
-//
-//				NamingManager.setObjectFactoryBuilder(new ObjectFactoryBuilder()
-//					{
-//
-//						@Override
-//						public ObjectFactory createObjectFactory(Object obj, Hashtable<?, ?> environment) throws NamingException
-//						{
-//							if (obj instanceof Reference)
-//							{
-//								String factoryClassName = ((Reference) obj).getFactoryClassName();
-//								PackageAdmin packageAdmin = MobPlugin.getPackageAdmin();
-//								ExportedPackage exportedPackage = packageAdmin.getExportedPackage(factoryClassName.substring(0, factoryClassName
-//										.lastIndexOf('.')));
-//
-//								if (exportedPackage != null)
-//								{
-//									try
-//									{
-//										return (ObjectFactory) exportedPackage.getExportingBundle().loadClass(factoryClassName).newInstance();
-//									}
-//									catch (Exception e)
-//									{
-//										logger.error(e, e);
-//									}
-//								}
-//							}
-//
-//							return null;
-//						}
-//					});
-//			}
-//			catch (NamingException e)
-//			{
-//				logger.error(e, e);
-//			}
+			// try
+			// {
+			// NamingManager.setInitialContextFactoryBuilder(new InitialContextFactoryBuilder()
+			// {
+			//
+			// @Override
+			// public InitialContextFactory createInitialContextFactory(Hashtable<?, ?> environment) throws NamingException
+			// {
+			// String factory = (String) environment.get("java.naming.factory.initial");
+			// if (factory != null)
+			// {
+			// if (factory.equals(javaURLContextFactory.class.getName()))
+			// {
+			// return new org.apache.naming.java.javaURLContextFactory();
+			// }
+			// else
+			// {
+			// PackageAdmin packageAdmin = MobPlugin.getPackageAdmin();
+			// try
+			// {
+			// return (InitialContextFactory) packageAdmin.getExportedPackage(factory.substring(0, factory.lastIndexOf('.')))
+			// .getExportingBundle().loadClass(factory).newInstance();
+			// }
+			// catch (Exception e)
+			// {
+			// logger.error(e, e);
+			// }
+			// }
+			// }
+			// return new org.apache.naming.java.javaURLContextFactory();
+			// }
+			// });
+			//
+			// NamingManager.setObjectFactoryBuilder(new ObjectFactoryBuilder()
+			// {
+			//
+			// @Override
+			// public ObjectFactory createObjectFactory(Object obj, Hashtable<?, ?> environment) throws NamingException
+			// {
+			// if (obj instanceof Reference)
+			// {
+			// String factoryClassName = ((Reference) obj).getFactoryClassName();
+			// PackageAdmin packageAdmin = MobPlugin.getPackageAdmin();
+			// ExportedPackage exportedPackage = packageAdmin.getExportedPackage(factoryClassName.substring(0, factoryClassName
+			// .lastIndexOf('.')));
+			//
+			// if (exportedPackage != null)
+			// {
+			// try
+			// {
+			// return (ObjectFactory) exportedPackage.getExportingBundle().loadClass(factoryClassName).newInstance();
+			// }
+			// catch (Exception e)
+			// {
+			// logger.error(e, e);
+			// }
+			// }
+			// }
+			//
+			// return null;
+			// }
+			// });
+			// }
+			// catch (NamingException e)
+			// {
+			// logger.error(e, e);
+			// }
 
-			executorService = new ThreadPoolExecutor(1, 10, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(1000), new ThreadFactory()
+			executorService = Executors.newCachedThreadPool(new ThreadFactory()
 				{
 
 					@Override
@@ -171,8 +172,8 @@ public class DeployOSGIEJB3Bundle
 					UserTransaction transaction = MobPlugin.getService(UserTransaction.class);
 					RefAddr ra = new UserTransactionRef("UserTransaction", transaction);
 
-					Reference ref = new Reference(UserTransaction.class.getName(), new StringRefAddr("name", "UserTransaction"), UserTransactionFactory.class
-							.getName(), UserTransactionFactory.class.getResource("/").toString());
+					Reference ref = new Reference(UserTransaction.class.getName(), new StringRefAddr("name", "UserTransaction"),
+							UserTransactionFactory.class.getName(), UserTransactionFactory.class.getResource("/").toString());
 					ref.add(ra);
 
 					javaContext.rebind("UserTransaction", ref);
@@ -192,7 +193,7 @@ public class DeployOSGIEJB3Bundle
 		}
 
 	}
-	
+
 	public static ExecutorService getExecutorService()
 	{
 		return executorService;

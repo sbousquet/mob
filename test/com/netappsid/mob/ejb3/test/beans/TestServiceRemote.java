@@ -14,4 +14,9 @@ public interface TestServiceRemote
 
 	void testMethod();
 
+	/**
+	 * @return
+	 */
+	String getPostConstruct();
+
 }

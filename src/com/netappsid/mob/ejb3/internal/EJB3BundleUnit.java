@@ -1,6 +1,8 @@
 package com.netappsid.mob.ejb3.internal;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,6 +11,8 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.naming.Context;
@@ -363,10 +367,24 @@ public class EJB3BundleUnit implements EJB3LifecycleManager
 	 * @see com.netappsid.mod.ejb3.internal.EJB3LifecycleManager#create(java.lang.Class)
 	 */
 	@Override
-	public <T> T create(Class<T> toCreate) throws InstantiationException, IllegalAccessException
+	public <T> T create(Class<T> toCreate) throws Exception
 	{
 		T newInstance = toCreate.newInstance();
+		
+		//inject before
 		inject(newInstance);
+		
+		//call postConstruct if any
+		Method[] methods = toCreate.getMethods();
+		for (Method method : methods)
+		{
+			if(method.isAnnotationPresent(PostConstruct.class))
+			{
+				method.invoke(newInstance);
+				break;
+			}
+		}
+		
 		return newInstance;
 	}
 
@@ -376,6 +394,17 @@ public class EJB3BundleUnit implements EJB3LifecycleManager
 	 * @see com.netappsid.mod.ejb3.internal.EJB3LifecycleManager#destroy(java.lang.Object)
 	 */
 	@Override
-	public void destroy(Object toDestroy)
-	{}
+	public void destroy(Object toDestroy) throws Exception
+	{
+		//call predestroy if any
+		Method[] methods = toDestroy.getClass().getMethods();
+		for (Method method : methods)
+		{
+			if(method.isAnnotationPresent(PreDestroy.class))
+			{
+				method.invoke(toDestroy);
+				break;
+			}
+		}
+	}
 }

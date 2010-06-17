@@ -75,7 +75,7 @@ public abstract class AbstractService extends RefAddr implements EJb3Service, Re
 	{
 		if (ejbLink == null)
 		{
-			ejbLink = new LocalEJBServiceLink();
+			ejbLink = new EmptyEJBServiceLink();
 		}
 		return ejbLink;
 	}

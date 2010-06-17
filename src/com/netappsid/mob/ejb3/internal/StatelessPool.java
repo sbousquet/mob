@@ -42,11 +42,9 @@ public class StatelessPool
 
 	/**
 	 * @param class1
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws InterruptedException
+	 * @throws Exception 
 	 */
-	public <T> T get(Class<T> beanClass) throws InstantiationException, IllegalAccessException, InterruptedException
+	public <T> T get(Class<T> beanClass) throws Exception
 	{
 		if (!isRegister(beanClass))
 		{
@@ -60,8 +58,9 @@ public class StatelessPool
 
 	/**
 	 * @param testServiceBean
+	 * @throws Exception 
 	 */
-	public <T> void recycle(T toRecycle)
+	public <T> void recycle(T toRecycle) throws Exception
 	{
 		if (isRegister(toRecycle.getClass()))
 		{

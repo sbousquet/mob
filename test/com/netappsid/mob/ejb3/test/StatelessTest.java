@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import javassist.util.proxy.ProxyObject;
 
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -46,6 +47,18 @@ public class StatelessTest
 
 		assertTrue(content instanceof ProxyObject);
 
+	}
+	
+	@Test
+	public void testStatelessPostConstruct()
+	{
+		EJB3BundleUnit ejb3BundleUnit = new EJB3BundleUnit("test");
+		StatelessService statelessService = new StatelessService(executorService, TestServiceBean.class, ejb3BundleUnit);
+		ejb3BundleUnit.addService(statelessService);
+
+		Object content = statelessService.getContent();
+
+		Assert.assertEquals("Test must set", ((TestServiceRemote)content).getPostConstruct());
 	}
 
 	@Test

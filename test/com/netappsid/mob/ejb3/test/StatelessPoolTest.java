@@ -9,12 +9,10 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.junit.After;
 import org.junit.Test;
 
 import com.netappsid.mob.ejb3.internal.Pool;
@@ -32,7 +30,7 @@ public class StatelessPoolTest
 {
 
 	@Test
-	public void testRegisterStateless() throws InstantiationException, IllegalAccessException, InterruptedException
+	public void testRegisterStateless() throws Exception
 	{
 		StatelessPool statelessPool = new StatelessPool(new DummyLifecycleManager());
 		statelessPool.get(TestServiceBean.class);
@@ -41,7 +39,7 @@ public class StatelessPoolTest
 	}
 
 	@Test
-	public void testCreateStatelessInstance() throws InstantiationException, IllegalAccessException, InterruptedException
+	public void testCreateStatelessInstance() throws Exception
 	{
 		StatelessPool statelessPool = new StatelessPool(new DummyLifecycleManager());
 
@@ -51,7 +49,7 @@ public class StatelessPoolTest
 	}
 
 	@Test
-	public void testReuseStatelessInstance() throws InstantiationException, IllegalAccessException, InterruptedException
+	public void testReuseStatelessInstance() throws Exception
 	{
 		StatelessPool statelessPool = new StatelessPool(new DummyLifecycleManager());
 
@@ -66,7 +64,7 @@ public class StatelessPoolTest
 	}
 
 	@Test
-	public void testLimitReach() throws InstantiationException, IllegalAccessException, InterruptedException, ExecutionException
+	public void testLimitReach() throws Exception
 	{
 		StatelessPool statelessPool = new StatelessPool(new DummyLifecycleManager());
 		TestServiceBean testServiceBean2 = statelessPool.get(TestServiceBean.class);

@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import com.netappsid.mob.ejb3.internal.EJB3BundleUnit;
 import com.netappsid.mob.ejb3.internal.InvocationHandler;
-import com.netappsid.mob.ejb3.internal.LocalEJBServiceLink;
+import com.netappsid.mob.ejb3.internal.FakeRemoteEJBServiceLink;
 
 import static org.junit.Assert.*;
 
@@ -39,7 +39,7 @@ public class InvocationHandlerTest
 	{
 
 		TestServiceBean testServiceBean = new TestServiceBean();
-		InvocationHandler invocationHandler = new InvocationHandler(new LocalEJBServiceLink(), new EJB3BundleUnit("test"), testServiceBean,
+		InvocationHandler invocationHandler = new InvocationHandler(new FakeRemoteEJBServiceLink(), new EJB3BundleUnit("test"), testServiceBean,
 				TestServiceBean.class.getMethod("testMethodThrowException"), null)
 			{
 				/*
@@ -93,7 +93,7 @@ public class InvocationHandlerTest
 	{
 
 		TestServiceBean testServiceBean = new TestServiceBean();
-		InvocationHandler invocationHandler = new InvocationHandler(new LocalEJBServiceLink(), new EJB3BundleUnit("test"), testServiceBean,
+		InvocationHandler invocationHandler = new InvocationHandler(new FakeRemoteEJBServiceLink(), new EJB3BundleUnit("test"), testServiceBean,
 				TestServiceBean.class.getMethod("testMethodThrowException"), new Object[0])
 			{
 				/*

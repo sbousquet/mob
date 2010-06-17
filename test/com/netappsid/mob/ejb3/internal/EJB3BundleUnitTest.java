@@ -44,7 +44,7 @@ public class EJB3BundleUnitTest
 	
 	
 	@Test
-	public void testInjectStateless() throws InstantiationException, IllegalAccessException
+	public void testInjectStateless() throws Exception
 	{
 		EJB3BundleUnit ejb3BundleUnit = new EJB3BundleUnit("test");
 		ejb3BundleUnit.addService(new StatelessService(newSingleThreadExecutor, TestServiceBean.class, ejb3BundleUnit));

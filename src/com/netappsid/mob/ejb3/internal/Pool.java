@@ -38,11 +38,9 @@ public class Pool<T>
 
 	/**
 	 * @return
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws InterruptedException 
+	 * @throws Exception 
 	 */
-	public T get() throws InstantiationException, IllegalAccessException, InterruptedException
+	public T get() throws Exception
 	{
 		T instance = availables.poll();
 
@@ -68,7 +66,7 @@ public class Pool<T>
 
 	}
 
-	public void recycle(T toRecycle)
+	public void recycle(T toRecycle) throws Exception
 	{
 		if (!availables.offer(toRecycle))
 		{

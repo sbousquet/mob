@@ -23,10 +23,10 @@ import com.netappsid.mob.ejb3.io.OSGIObjectOutputStream;
  * @version
  * 
  */
-public class LocalEJBServiceLink implements EJBServiceLink
+public class FakeRemoteEJBServiceLink implements EJBServiceLink
 {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LocalEJBServiceLink.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FakeRemoteEJBServiceLink.class);
 	/* (non-Javadoc)
 	 * @see com.netappsid.ejb3.EJBServiceLink#enter(java.lang.Object[])
 	 */

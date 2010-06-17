@@ -12,7 +12,7 @@ package com.netappsid.mob.ejb3.internal;
  */
 public interface EJB3LifecycleManager
 {
-	public <T> T create(Class<T> toCreate) throws InstantiationException, IllegalAccessException;
-	public void destroy(Object toDestroy);
+	public <T> T create(Class<T> toCreate) throws Exception;
+	public void destroy(Object toDestroy) throws Exception;
 	
 }

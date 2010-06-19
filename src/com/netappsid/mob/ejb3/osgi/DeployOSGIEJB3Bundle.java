@@ -59,8 +59,6 @@ public class DeployOSGIEJB3Bundle
 {
 	private static Logger logger = LoggerFactory.getLogger(DeployOSGIEJB3Bundle.class);
 
-	private static boolean userTransactionBind = false;
-
 	private static ExecutorService executorService;
 
 	private static boolean isInit = false;
@@ -75,74 +73,6 @@ public class DeployOSGIEJB3Bundle
 	{
 		if (!isInit)
 		{
-			// try
-			// {
-			// NamingManager.setInitialContextFactoryBuilder(new InitialContextFactoryBuilder()
-			// {
-			//
-			// @Override
-			// public InitialContextFactory createInitialContextFactory(Hashtable<?, ?> environment) throws NamingException
-			// {
-			// String factory = (String) environment.get("java.naming.factory.initial");
-			// if (factory != null)
-			// {
-			// if (factory.equals(javaURLContextFactory.class.getName()))
-			// {
-			// return new org.apache.naming.java.javaURLContextFactory();
-			// }
-			// else
-			// {
-			// PackageAdmin packageAdmin = MobPlugin.getPackageAdmin();
-			// try
-			// {
-			// return (InitialContextFactory) packageAdmin.getExportedPackage(factory.substring(0, factory.lastIndexOf('.')))
-			// .getExportingBundle().loadClass(factory).newInstance();
-			// }
-			// catch (Exception e)
-			// {
-			// logger.error(e, e);
-			// }
-			// }
-			// }
-			// return new org.apache.naming.java.javaURLContextFactory();
-			// }
-			// });
-			//
-			// NamingManager.setObjectFactoryBuilder(new ObjectFactoryBuilder()
-			// {
-			//
-			// @Override
-			// public ObjectFactory createObjectFactory(Object obj, Hashtable<?, ?> environment) throws NamingException
-			// {
-			// if (obj instanceof Reference)
-			// {
-			// String factoryClassName = ((Reference) obj).getFactoryClassName();
-			// PackageAdmin packageAdmin = MobPlugin.getPackageAdmin();
-			// ExportedPackage exportedPackage = packageAdmin.getExportedPackage(factoryClassName.substring(0, factoryClassName
-			// .lastIndexOf('.')));
-			//
-			// if (exportedPackage != null)
-			// {
-			// try
-			// {
-			// return (ObjectFactory) exportedPackage.getExportingBundle().loadClass(factoryClassName).newInstance();
-			// }
-			// catch (Exception e)
-			// {
-			// logger.error(e, e);
-			// }
-			// }
-			// }
-			//
-			// return null;
-			// }
-			// });
-			// }
-			// catch (NamingException e)
-			// {
-			// logger.error(e, e);
-			// }
-
 			executorService = Executors.newCachedThreadPool(new ThreadFactory()
 				{
 
@@ -152,39 +82,6 @@ public class DeployOSGIEJB3Bundle
 						return new EJB3ThreadWorker(r);
 					}
 				});
-
-			// bind the usertransaction manager
-			if (!userTransactionBind)
-			{
-
-				try
-				{
-					Context javaContext = MobPlugin.getService(Context.class);
-					try
-					{
-						javaContext = (Context) javaContext.lookup("java:");
-					}
-					catch (NamingException e)
-					{
-						javaContext = javaContext.createSubcontext("java:");
-					}
-
-					UserTransaction transaction = MobPlugin.getService(UserTransaction.class);
-					RefAddr ra = new UserTransactionRef("UserTransaction", transaction);
-
-					Reference ref = new Reference(UserTransaction.class.getName(), new StringRefAddr("name", "UserTransaction"),
-							UserTransactionFactory.class.getName(), UserTransactionFactory.class.getResource("/").toString());
-					ref.add(ra);
-
-					javaContext.rebind("UserTransaction", ref);
-
-				}
-				catch (NamingException e)
-				{
-					logger.error(e.getMessage(), e);
-				}
-				userTransactionBind = true;
-			}
 
 			// init the datasource plugin
 			DataSourceHelper.init();

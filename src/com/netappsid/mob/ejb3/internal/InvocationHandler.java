@@ -104,6 +104,16 @@ public class InvocationHandler implements Callable<Object>
 			args = parameters;
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.interceptor.InvocationContext#getTimer()
+		 */
+		@Override
+		public Object getTimer()
+		{
+			//TODO implements timer
+			return null;
+		}
+
 	}
 
 	/**

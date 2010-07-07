@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="com.netappsid.mob.ejb.container.provider">
+   <implementation class="com.netappsid.mob.ejb3.EJBContainerProviderImpl"/>
+   <service>
+      <provide interface="javax.ejb.spi.EJBContainerProvider"/>
+   </service>
+</scr:component>

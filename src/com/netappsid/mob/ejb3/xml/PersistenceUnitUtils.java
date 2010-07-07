@@ -26,7 +26,7 @@ public class PersistenceUnitUtils
 	{
 		Multimap<String, URL> xsltByUnit = ArrayListMultimap.create();
 
-		IConfigurationElement[] xsltExtentions = extensionRegistry.getConfigurationElementsFor("com.netappsid.ejb3.persistence.xslt");
+		IConfigurationElement[] xsltExtentions = extensionRegistry.getConfigurationElementsFor("com.netappsid.mob.ejb3.persistence.xslt");
 
 		for (IConfigurationElement modif : xsltExtentions)
 		{

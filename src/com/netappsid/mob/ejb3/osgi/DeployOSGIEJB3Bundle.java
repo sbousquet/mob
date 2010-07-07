@@ -39,7 +39,7 @@ import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.netappsid.datasource.DataSourceHelper;
+import com.netappsid.mob.ejb3.DataSourceHelper;
 import com.netappsid.mob.ejb3.MobPlugin;
 import com.netappsid.mob.ejb3.internal.EJB3ThreadWorker;
 import com.netappsid.mob.ejb3.internal.EJb3AnnotationVisitor;
@@ -63,6 +63,8 @@ public class DeployOSGIEJB3Bundle
 
 	private static boolean isInit = false;
 
+	private static boolean userTransactionBind;
+
 	/**
 	 * 
 	 */
@@ -83,10 +85,40 @@ public class DeployOSGIEJB3Bundle
 					}
 				});
 
-			// init the datasource plugin
-			DataSourceHelper.init();
-
 			isInit = true;
+		}
+		
+		// bind the usertransaction manager
+		if (!userTransactionBind)
+		{
+
+			try
+			{
+				Context javaContext = MobPlugin.getService(Context.class);
+				try
+				{
+					javaContext = (Context) javaContext.lookup("java:");
+				}
+				catch (NamingException e)
+				{
+					javaContext = javaContext.createSubcontext("java:");
+				}
+
+				UserTransaction transaction = MobPlugin.getService(UserTransaction.class);
+				RefAddr ra = new UserTransactionRef("UserTransaction", transaction);
+
+				Reference ref = new Reference(UserTransaction.class.getName(), new StringRefAddr("name", "UserTransaction"), UserTransactionFactory.class
+						.getName(), UserTransactionFactory.class.getResource("/").toString());
+				ref.add(ra);
+
+				javaContext.rebind("UserTransaction", ref);
+
+			}
+			catch (NamingException e)
+			{
+				logger.error(e.getMessage(), e);
+			}
+			userTransactionBind = true;
 		}
 
 	}
@@ -127,7 +159,7 @@ public class DeployOSGIEJB3Bundle
 					URL url = datasources.nextElement();
 					try
 					{
-						DataSourceHelper.parseXmlDataSourceAndBindIt(new SAXReader().read(url.openStream()), new InitialContext());
+						DataSourceHelper.parseXmlDataSourceAndBindIt(new SAXReader().read(url.openStream()), MobPlugin.getService(Context.class));
 					}
 					catch (Exception e)
 					{

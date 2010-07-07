@@ -121,7 +121,7 @@ public class MobPlugin implements BundleActivator
 
 	private IConfigurationElement[] getEJB3DeployerConfigurationElements()
 	{
-		return Platform.getExtensionRegistry().getConfigurationElementsFor("com.netappsid.ejb3.deployer");
+		return Platform.getExtensionRegistry().getConfigurationElementsFor("com.netappsid.mob.ejb3.deployer");
 	}
 
 	public static PackageAdmin getPackageAdmin()

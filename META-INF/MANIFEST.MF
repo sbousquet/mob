@@ -17,8 +17,7 @@ Export-Package:
  com.netappsid.mob.ejb3.test.beans,
  com.netappsid.mob.ejb3.xml
 Bundle-Vendor: NetAppsID inc.
-Require-Bundle: com.netappsid.datasource;bundle-version="[2.0.0,2.2.0)",
- org.objectweb.asm;bundle-version="3.1.0",
+Require-Bundle: org.objectweb.asm;bundle-version="3.1.0",
  org.junit4;bundle-version="4.5.0";resolution:=optional,
  com.netappsid.test.tools;bundle-version="1.0.0";resolution:=optional,
  com.netappsid.javassist;bundle-version="3.9.0";visibility:=reexport

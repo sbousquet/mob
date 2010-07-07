@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netappsid.mob.ejb3.JPAProvider;
+import com.netappsid.mob.ejb3.JPAProviderFactory;
 import com.netappsid.mob.ejb3.MobPlugin;
 import com.netappsid.mob.ejb3.internal.BundleUnitManager;
 import com.netappsid.mob.ejb3.internal.EJB3BundleUnit;
@@ -132,7 +133,7 @@ public class EJB3Deployer
 			final EJB3BundleUnit bundleUnit = BundleUnitManager.getBundleUnit(baseName);
 
 			bundleUnit.close();
-			
+
 			undeployEntities(bundleUnit);
 			undeployServices(bundleUnit, (Context) MobPlugin.getService(Context.class).lookup(baseName));
 
@@ -173,7 +174,8 @@ public class EJB3Deployer
 
 		if (persistenceUnitInfoXml.getProperties().containsKey("jboss.entity.manager.jndi.name"))
 		{
-			MobPlugin.getService(Context.class).bind(persistenceUnitInfoXml.getProperties().getProperty("jboss.entity.manager.jndi.name"), new JNDIEntityManager(bundleUnit));
+			MobPlugin.getService(Context.class).bind(persistenceUnitInfoXml.getProperties().getProperty("jboss.entity.manager.jndi.name"),
+					new JNDIEntityManager(bundleUnit));
 		}
 	}
 
@@ -278,15 +280,8 @@ public class EJB3Deployer
 
 	private JPAProvider getJPAProvider() throws CoreException
 	{
-		final IConfigurationElement[] configurationElements = Platform.getExtensionRegistry().getConfigurationElementsFor("com.netappsid.ejb3.jpa.provider");
-
-		for (IConfigurationElement configurationElement : configurationElements)
-		{
-			return (JPAProvider) configurationElement.createExecutableExtension("class");
-		}
-
-		throw new CoreException(new Status(IStatus.ERROR, MobPlugin.getInstance().getContext().getBundle().getSymbolicName(),
-				"No extension for com.netappsid.ejb3.jpa.provider present."));
+		JPAProviderFactory jpaProviderFactory = MobPlugin.getService(JPAProviderFactory.class);
+		return jpaProviderFactory.create();
 	}
 
 	public void setEjbJarXml(EjbJarXml ejbJarXml)

@@ -66,11 +66,14 @@ public class MobPlugin implements BundleActivator
 	public void start(BundleContext context) throws Exception
 	{
 		this.context = context;
-		initializeApplicationBundleDeployers();
 
-		for (Map.Entry<String, List<EJB3BundleDeployer>> entry : applicationBundleDeployers.entrySet())
+		if (!"junit".equals(System.getProperty("naid.mode")))
 		{
-			DeployOSGIEJB3Bundle.deploy(entry.getKey(), entry.getValue());
+			initializeApplicationBundleDeployers();
+			for (Map.Entry<String, List<EJB3BundleDeployer>> entry : applicationBundleDeployers.entrySet())
+			{
+				DeployOSGIEJB3Bundle.deploy(entry.getKey(), entry.getValue());
+			}
 		}
 	}
 

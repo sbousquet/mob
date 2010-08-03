@@ -1,0 +1,50 @@
+<project name="EJB3 container" default="checkout">
+	<target name="checkout" description="Checkouts required plugins for development when using Eclipse default plugins">
+		<antcall target="clear" />
+		<antcall target="development" />
+	</target>
+	<target name="clear">
+		<delete dir="plugins" />
+		<mkdir dir="plugins" />
+	</target>
+	<target name="development">
+		<osgi.release osgirepository="com.netappsid.tools.releaser.s3.S3OSGIRepository" dir="plugins">
+			
+			<plugin symbolicname="org.objectweb.asm" version="3.1.0" />
+			<plugin symbolicname="com.netappsid.xml" version="1.0.0" />
+			<plugin symbolicname="com.google.common" version="1.0.0" />
+			<plugin symbolicname="com.netappsid.javassist" version="3.9.0" />
+			<plugin symbolicname="com.netappsid.org.hibernate" version="3.3.2" />
+			<plugin symbolicname="slf4j.api" version="1.5.8" />
+			<plugin symbolicname="slf4j.log4j12" version="1.5.8" />
+
+			<plugin symbolicname="javax.activation" version="1.1.0" />
+			<plugin symbolicname="javax.persistence" version="1.99.0" />
+			<plugin symbolicname="javax.servlet" version="2.5.0" />
+			<plugin symbolicname="javax.transaction" version="1.1.1" />
+			<plugin symbolicname="javax.xml.rpc" version="1.1.0" />
+			<plugin symbolicname="javax.xml.soap" version="1.2.0" />
+			<plugin symbolicname="javax.xml.rpc" version="1.1.0" />
+			
+			<plugin symbolicname="javax.xml" version="1.3.4" />
+			<plugin symbolicname="com.netappsid.net.sf.cglib" version="2.2.0" />
+			
+			<plugin symbolicname="com.springsource.org.apache.commons.collections" version="3.2.0" />
+			<plugin symbolicname="com.springsource.org.apache.commons.logging" version="1.1.1" />
+			
+			<plugin symbolicname="com.netappsid.test.tools" version="1.0.0" />
+			<plugin symbolicname="javax.wsdl" version="1.5.1" />
+			<plugin symbolicname="javax.activation" version="1.1.0" />
+			<plugin symbolicname="javax.xml.soap" version="1.2.0" />
+
+			<plugin symbolicname="org.apache.derby.core" version="10.5.3" />
+
+			<plugin symbolicname="org.glassfish.javax.ejb" version="3.0.0" />
+			<plugin symbolicname="org.glassfish.javax.resource" version="3.0.1" />
+			<plugin symbolicname="org.glassfish.javax.security.jacc" version="3.0.1" />
+			<plugin symbolicname="org.glassfish.javax.servlet" version="3.0.1" />
+			<plugin symbolicname="org.glassfish.javax.transaction" version="3.0.1" />
+
+		</osgi.release>
+	</target>
+</project>

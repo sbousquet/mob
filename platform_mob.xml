@@ -19,6 +19,9 @@
 			<plugin symbolicname="slf4j.api" version="1.5.8" />
 			<plugin symbolicname="slf4j.log4j12" version="1.5.8" />
 
+			<plugin symbolicname="slf4j.api" version="1.6.1" />
+			<plugin symbolicname="slf4j.log4j12" version="1.6.1" />
+
 			<plugin symbolicname="javax.activation" version="1.1.0" />
 			<plugin symbolicname="javax.persistence" version="1.99.0" />
 			<plugin symbolicname="javax.servlet" version="2.5.0" />
@@ -61,7 +64,7 @@
 			<plugin symbolicname="com.springsource.org.apache.commons.lang" version="2.4.0" />
 			<plugin symbolicname="com.netappsid.common" version="2.3.0" />
 			<plugin symbolicname="com.springsource.org.objenesis" version="1.2.0" />
-			
+
 		</osgi.release>
 	</target>
 </project>

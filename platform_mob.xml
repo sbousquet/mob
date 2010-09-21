@@ -60,6 +60,7 @@
 			<plugin symbolicname="com.springsource.org.apache.commons.beanutils" version="1.7.0" />
 			<plugin symbolicname="com.springsource.org.apache.commons.lang" version="2.4.0" />
 			<plugin symbolicname="com.netappsid.common" version="2.3.0" />
+			<plugin symbolicname="com.springsource.org.objenesis" version="1.2.0" />
 			
 		</osgi.release>
 	</target>

@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  * @author xjodoin
- * @author netappsid
  * 
  */
 public class DataSourceHelper
@@ -42,7 +41,6 @@ public class DataSourceHelper
 	private static void rebindInitialContextToDataSource(Context context, String jndiName, DataSource dataSource)
 	{
 		Context javaContext = null;
-		
 		try
 		{
 			try

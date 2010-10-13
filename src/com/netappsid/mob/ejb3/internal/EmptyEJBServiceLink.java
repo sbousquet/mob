@@ -14,6 +14,8 @@ import com.netappsid.mob.ejb3.EJBServiceLink;
  */
 public class EmptyEJBServiceLink implements EJBServiceLink
 {
+	
+	private static final EmptyEJBServiceLink instance = new EmptyEJBServiceLink();
 
 	/* (non-Javadoc)
 	 * @see com.netappsid.mob.ejb3.EJBServiceLink#enter(java.lang.Object[])
@@ -31,6 +33,14 @@ public class EmptyEJBServiceLink implements EJBServiceLink
 	public Object exit(Object result)
 	{
 		return result;
+	}
+
+	/**
+	 * @return
+	 */
+	public static EJBServiceLink getInstance()
+	{
+		return instance;
 	}
 
 }

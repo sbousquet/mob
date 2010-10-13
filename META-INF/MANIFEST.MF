@@ -12,6 +12,7 @@ Export-Package:
  com.netappsid.mob.ejb3.io;version="0.5.2",
  com.netappsid.mob.ejb3.jndi;version="0.5.2",
  com.netappsid.mob.ejb3.osgi;version="0.5.2",
+ com.netappsid.mob.ejb3.remote,
  com.netappsid.mob.ejb3.security;version="0.5.2",
  com.netappsid.mob.ejb3.test;version="0.5.2",
  com.netappsid.mob.ejb3.test.beans;version="0.5.2",

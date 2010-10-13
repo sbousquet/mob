@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Transaction Properties File Fragment
+Bundle-SymbolicName: com.netappsid.mob.atomikos.properties
+Bundle-Version: 1.0.0
+Bundle-Vendor: NetAppsID Inc.
+Fragment-Host: com.netappsid.mob.atomikos;bundle-version="[1.0.0,2.0.0)"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: net.sourceforge.jtds;bundle-version="1.2.5";resolution:=optional,
+ org.apache.derby.core;bundle-version="10.5.3";resolution:=optional

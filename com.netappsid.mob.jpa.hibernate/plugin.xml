@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="com.netappsid.ejb3.hibernate.event.persist" name="Hibernate persist event listener" schema="schema/com.netappsid.ejb3.hibernate.event.persist.exsd"/>
+   <extension-point id="com.netappsid.ejb3.hibernate.event.merge" name="Merge event listener" schema="schema/com.netappsid.ejb3.hibernate.event.merge.exsd"/>
+   <extension-point id="com.netappsid.ejb3.hibernate.event.delete" name="Delete listener" schema="schema/com.netappsid.ejb3.hibernate.event.delete.exsd"/>
+   <extension-point id="com.netappsid.ejb3.hibernate.event.replicate" name="Replicate event" schema="schema/com.netappsid.ejb3.hibernate.event.replicate.exsd"/>
+   <extension-point id="com.netappsid.ejb3.hibernate.sessionfactory.interceptor" name="Hibernate SessionFactory Interceptor" schema="schema/com.netappsid.ejb3.hibernate.sessionfactory.interceptor.exsd"/>
+   <extension-point id="com.netappsid.ejb3.hibernate.events" name="Hibernate EventListeners" schema="schema/com.netappsid.ejb3.hibernate.events.exsd"/>
+
+</plugin>

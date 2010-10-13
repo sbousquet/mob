@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="com.netappsid.mob.jpa.hibernate">
+   <implementation class="com.netappsid.ejb3.hibernate.HibernateJPAProviderFactory"/>
+   <service>
+      <provide interface="com.netappsid.mob.ejb3.JPAProviderFactory"/>
+   </service>
+</scr:component>

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hibernate JPA Provider
+Bundle-SymbolicName: com.netappsid.mob.jpa.hibernate;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: NETAPPSID
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: com.netappsid.org.hibernate;bundle-version="3.3.2";visibility:=reexport,
+ com.netappsid.mob;bundle-version="0.5.0"
+Export-Package: com.netappsid.ejb3.hibernate;version="1.1.1"
+Import-Package: javax.persistence,
+ javax.persistence.spi,
+ org.apache.log4j,
+ org.eclipse.core.runtime
+Service-Component: OSGI-INF/hibernatejpaproviderfactory.xml
+Bundle-ActivationPolicy: lazy

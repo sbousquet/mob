@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="false" name="com.netappsid.mob.jndi">
+   <implementation class="org.apache.naming.NamingContext"/>
+   <service>
+      <provide interface="javax.naming.Context"/>
+   </service>
+</scr:component>

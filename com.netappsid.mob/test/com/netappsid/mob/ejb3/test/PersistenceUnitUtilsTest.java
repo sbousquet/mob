@@ -26,7 +26,6 @@ import com.netappsid.mob.ejb3.xml.PersistenceUnitUtils;
 import com.netappsid.test.tools.osgi.BundleAdapter;
 import com.netappsid.test.tools.osgi.BundleContextAdapter;
 import com.netappsid.test.tools.osgi.ConfigurationElementAdapter;
-import com.netappsid.test.tools.osgi.ExtensionRegistryAdapter;
 
 public class PersistenceUnitUtilsTest
 {

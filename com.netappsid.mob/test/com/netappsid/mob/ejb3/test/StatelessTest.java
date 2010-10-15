@@ -61,41 +61,5 @@ public class StatelessTest
 		Assert.assertEquals("Test must set", ((TestServiceRemote)content).getPostConstruct());
 	}
 
-	@Test
-	public void testStatelessInstanceMustChange()
-	{
-		EJB3BundleUnit ejb3BundleUnit = new EJB3BundleUnit("test");
-		StatelessService statelessService = new StatelessService(executorService, TestServiceBean.class, ejb3BundleUnit);
-		ejb3BundleUnit.addService(statelessService);
-
-		final TestServiceRemote content = (TestServiceRemote) statelessService.getContent();
-
-		
-		Thread thread = new Thread()
-		{
-			public void run() 
-			{
-				content.testSleep();
-			}
-		};
-
-		thread.start();
-		
-		IdentityTest testIdentity = content.testIdentity(new IdentityTest());
-		
-		try
-		{
-			thread.join();
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
-		}
-		
-		IdentityTest testIdentity2 = content.testIdentity(new IdentityTest());
-
-		assertFalse(testIdentity.getIdentity() == testIdentity2.getIdentity());
-
-	}
 
 }

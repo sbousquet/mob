@@ -14,8 +14,6 @@ import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
-import com.hazelcast.client.HazelcastClient;
-
 /**
  * @author xjodoin
  * @author NetAppsID inc.
@@ -32,8 +30,8 @@ public class ClientNamingContext implements Context
 	 */
 	public ClientNamingContext()
 	{
-		HazelcastClient newHazelcastClient = HazelcastClient.newHazelcastClient("naid", "naid", "localhost");
-		distributedJNDI = newHazelcastClient.getMap("hajndi");
+//		HazelcastClient newHazelcastClient = HazelcastClient.newHazelcastClient("naid", "naid", "localhost");
+//		distributedJNDI = newHazelcastClient.getMap("hajndi");
 	}
 	
 	/* (non-Javadoc)

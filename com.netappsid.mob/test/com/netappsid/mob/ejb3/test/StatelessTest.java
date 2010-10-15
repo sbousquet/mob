@@ -1,6 +1,5 @@
 package com.netappsid.mob.ejb3.test;
 
-import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 import java.util.concurrent.ExecutorService;
@@ -31,7 +30,7 @@ public class StatelessTest
 	}
 
 	@AfterClass
-	public static void after()
+	public static void afterClass()
 	{
 		executorService.shutdown();
 	}
@@ -48,7 +47,7 @@ public class StatelessTest
 		assertTrue(content instanceof ProxyObject);
 
 	}
-	
+
 	@Test
 	public void testStatelessPostConstruct()
 	{
@@ -58,8 +57,7 @@ public class StatelessTest
 
 		Object content = statelessService.getContent();
 
-		Assert.assertEquals("Test must set", ((TestServiceRemote)content).getPostConstruct());
+		Assert.assertEquals("Test must set", ((TestServiceRemote) content).getPostConstruct());
 	}
-
 
 }

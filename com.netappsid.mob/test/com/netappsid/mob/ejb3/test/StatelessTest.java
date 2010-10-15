@@ -32,7 +32,10 @@ public class StatelessTest
 	@AfterClass
 	public static void afterClass()
 	{
-		executorService.shutdown();
+		if (executorService != null)
+		{
+			executorService.shutdown();
+		}
 	}
 
 	@Test

@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import java.beans.IntrospectionException;
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -25,6 +26,7 @@ public class JPAHelperTest
 	 * @throws IntrospectionException 
 	 */
 	@Test
+	@Ignore
 	public void testBuildEntityGraph() throws IntrospectionException
 	{
 		Set<Class<?>> buildEntityGraph = JPAHelper.buildEntityGraph(TestEntity.class);

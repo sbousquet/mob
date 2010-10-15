@@ -23,9 +23,6 @@ import org.osgi.framework.BundleContext;
 
 import com.google.common.collect.Multimap;
 import com.netappsid.mob.ejb3.xml.PersistenceUnitUtils;
-import com.netappsid.test.tools.osgi.BundleAdapter;
-import com.netappsid.test.tools.osgi.BundleContextAdapter;
-import com.netappsid.test.tools.osgi.ConfigurationElementAdapter;
 
 public class PersistenceUnitUtilsTest
 {
@@ -38,7 +35,7 @@ public class PersistenceUnitUtilsTest
 				@Override
 				public IConfigurationElement[] getConfigurationElementsFor(String extensionPointId)
 				{
-					ConfigurationElementAdapter configurationElementAdapter = new ConfigurationElementAdapter()
+					IConfigurationElement configurationElementAdapter = new ConfigurationElementAdapter()
 						{
 							@Override
 							public IContributor getContributor() throws InvalidRegistryObjectException

@@ -44,7 +44,7 @@
 			<plugin symbolicname="org.glassfish.javax.security.jacc" version="3.0.1" />
 			<plugin symbolicname="org.glassfish.javax.servlet" version="3.0.1" />
 			<plugin symbolicname="org.glassfish.javax.transaction" version="3.0.1" />
-
+			<plugin symbolicname="com.eaio.uuid" version="3.1.0" />
 
 		</osgi.release>
 	</target>
@@ -62,6 +62,7 @@
 			<plugin symbolicname="com.springsource.org.apache.commons.lang" version="2.4.0" />
 			<plugin symbolicname="com.netappsid.common" version="2.3.0" />
 			<plugin symbolicname="com.springsource.org.objenesis" version="1.2.0" />
+			<plugin symbolicname="org.mockito.mockito-core-eclipse" version="1.8.5" />
 
 		</osgi.release>
 	</target>

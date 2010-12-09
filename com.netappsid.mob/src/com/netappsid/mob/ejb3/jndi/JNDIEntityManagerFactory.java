@@ -11,7 +11,8 @@ import javax.naming.Reference;
 import javax.naming.spi.ObjectFactory;
 
 import com.netappsid.mob.ejb3.internal.BundleUnitManager;
-
+import com.netappsid.mob.ejb3.internal.EJB3BundleUnit;
+import com.netappsid.mob.ejb3.internal.TransactionScopedEntityManager;
 
 /**
  * @author xjodoin
@@ -31,7 +32,8 @@ public class JNDIEntityManagerFactory implements ObjectFactory
 
 		String bundleUnitName = (String) ref.get("EntityManager").getContent();
 
-		return BundleUnitManager.getBundleUnit(bundleUnitName).getManager();
+		EJB3BundleUnit bundleUnit = BundleUnitManager.getBundleUnit(bundleUnitName);
+		return new TransactionScopedEntityManager(bundleUnit);
 
 	}
 }

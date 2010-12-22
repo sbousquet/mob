@@ -66,4 +66,11 @@
 
 		</osgi.release>
 	</target>
+	<target name="publish" description="Publish plugins to S3 repository">
+		<osgi.publish>
+			<fileset dir="/home/xjodoin/Bureau/plugins">
+				<include name="*" />
+			</fileset>
+		</osgi.publish >
+	</target>
 </project>

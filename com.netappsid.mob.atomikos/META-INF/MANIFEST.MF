@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atomikos
 Bundle-SymbolicName: com.netappsid.mob.atomikos
-Bundle-Version: 1.1.0
+Bundle-Version: 1.2.0
+DynamicImport-Package: *
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.jms,
  javax.resource;version="1.6.0.alpha",
@@ -49,7 +50,4 @@ Export-Package: com.atomikos.beans;version="3.5.9",
  com.netappsid.mob.datasource;version="2.1.1"
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/usertransactionservice.xml, OSGI-INF/mobdatasource.xml
-Require-Bundle: net.sourceforge.jtds;bundle-version="1.2.5";resolution:=optional,
- org.apache.derby.core;bundle-version="10.5.3";resolution:=optional,
- com.netappsid.mob;bundle-version="0.5.1",
- org.postgresql;bundle-version="8.4.702";resolution:=optional
+Require-Bundle: com.netappsid.mob;bundle-version="0.5.1"

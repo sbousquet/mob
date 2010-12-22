@@ -165,7 +165,7 @@ public class EJB3BundleUnit implements EJB3LifecycleManager {
 			} else if (field.isAnnotationPresent(Resource.class)) {
 				try {
 					toInject = new InitialContext().lookup(field.getAnnotation(
-							Resource.class).name());
+							Resource.class).mappedName());
 				} catch (NamingException e) {
 					logger.error(e.getMessage(), e);
 				}

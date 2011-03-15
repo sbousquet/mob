@@ -3,10 +3,8 @@
  */
 package com.netappsid.mob.ejb3.test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -15,6 +13,7 @@ import java.util.concurrent.Future;
 
 import org.junit.Test;
 
+import com.netappsid.mob.ejb3.internal.EJB3BundleUnit;
 import com.netappsid.mob.ejb3.internal.Pool;
 import com.netappsid.mob.ejb3.internal.StatelessPool;
 import com.netappsid.mob.ejb3.test.beans.TestServiceBean;
@@ -32,7 +31,7 @@ public class StatelessPoolTest
 	@Test
 	public void testRegisterStateless() throws Exception
 	{
-		StatelessPool statelessPool = new StatelessPool(new DummyLifecycleManager());
+		StatelessPool statelessPool = new StatelessPool(mock(EJB3BundleUnit.class));
 		statelessPool.get(TestServiceBean.class);
 
 		assertTrue(statelessPool.isRegister(TestServiceBean.class));
@@ -41,7 +40,7 @@ public class StatelessPoolTest
 	@Test
 	public void testCreateStatelessInstance() throws Exception
 	{
-		StatelessPool statelessPool = new StatelessPool(new DummyLifecycleManager());
+		StatelessPool statelessPool = new StatelessPool(mock(EJB3BundleUnit.class));
 
 		TestServiceBean testServiceBean = statelessPool.get(TestServiceBean.class);
 
@@ -51,7 +50,7 @@ public class StatelessPoolTest
 	@Test
 	public void testReuseStatelessInstance() throws Exception
 	{
-		StatelessPool statelessPool = new StatelessPool(new DummyLifecycleManager());
+		StatelessPool statelessPool = new StatelessPool(mock(EJB3BundleUnit.class));
 
 		TestServiceBean testServiceBean = statelessPool.get(TestServiceBean.class);
 
@@ -66,7 +65,7 @@ public class StatelessPoolTest
 	@Test
 	public void testLimitReach() throws Exception
 	{
-		StatelessPool statelessPool = new StatelessPool(new DummyLifecycleManager());
+		StatelessPool statelessPool = new StatelessPool(mock(EJB3BundleUnit.class));
 		TestServiceBean testServiceBean2 = statelessPool.get(TestServiceBean.class);
 		statelessPool.recycle(testServiceBean2);
 

@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
+import javax.transaction.UserTransaction;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -56,9 +57,18 @@ public class EJB3Deployer
 
 	private EjbJarXml ejbJarXml;
 
-	public EJB3Deployer(ExecutorService executorService, String baseName)
+	private final Context context;
+	private final JPAProviderFactory jpaProviderFactory;
+
+	private final UserTransaction userTransaction;
+
+	public EJB3Deployer(ExecutorService executorService, UserTransaction userTransaction, Context context, JPAProviderFactory jpaProviderFactory,
+			String baseName)
 	{
 		this.executorService = executorService;
+		this.userTransaction = userTransaction;
+		this.context = context;
+		this.jpaProviderFactory = jpaProviderFactory;
 		this.baseName = baseName;
 	}
 
@@ -112,8 +122,8 @@ public class EJB3Deployer
 	{
 		try
 		{
-			final EJB3BundleUnit bundleUnit = new EJB3BundleUnit(baseName);
-			final Context bundleContext = MobPlugin.getService(Context.class).createSubcontext(baseName);
+			final EJB3BundleUnit bundleUnit = new EJB3BundleUnit(context, baseName);
+			final Context bundleContext = context.createSubcontext(baseName);
 
 			deployEntities(bundleUnit);
 			deployServices(bundleUnit, bundleContext);
@@ -135,9 +145,9 @@ public class EJB3Deployer
 			bundleUnit.close();
 
 			undeployEntities(bundleUnit);
-			undeployServices(bundleUnit, (Context) MobPlugin.getService(Context.class).lookup(baseName));
+			undeployServices(bundleUnit, (Context) context.lookup(baseName));
 
-			MobPlugin.getService(Context.class).destroySubcontext(baseName);
+			context.destroySubcontext(baseName);
 			deployed = false;
 		}
 		catch (NamingException e)
@@ -158,7 +168,7 @@ public class EJB3Deployer
 			return;
 		}
 
-		final JPAProvider provider = getJPAProvider();
+		final JPAProvider provider = jpaProviderFactory.create();
 
 		for (Class<?> entity : entityClass)
 		{
@@ -174,8 +184,7 @@ public class EJB3Deployer
 
 		if (persistenceUnitInfoXml.getProperties().containsKey("jboss.entity.manager.jndi.name"))
 		{
-			MobPlugin.getService(Context.class).bind(persistenceUnitInfoXml.getProperties().getProperty("jboss.entity.manager.jndi.name"),
-					new JNDIEntityManager(bundleUnit));
+			context.bind(persistenceUnitInfoXml.getProperties().getProperty("jboss.entity.manager.jndi.name"), new JNDIEntityManager(bundleUnit));
 		}
 	}
 
@@ -186,7 +195,7 @@ public class EJB3Deployer
 
 		if (persistenceUnitInfoXml.getProperties().containsKey("jboss.entity.manager.jndi.name"))
 		{
-			MobPlugin.getService(Context.class).unbind(persistenceUnitInfoXml.getProperties().getProperty("jboss.entity.manager.jndi.name"));
+			context.unbind(persistenceUnitInfoXml.getProperties().getProperty("jboss.entity.manager.jndi.name"));
 		}
 	}
 
@@ -206,7 +215,7 @@ public class EJB3Deployer
 				}
 				else
 				{
-					ejb3Service = new StatelessService(executorService, serviceEntry.getKey(), bundleUnit);
+					ejb3Service = new StatelessService(executorService, userTransaction, serviceEntry.getKey(), bundleUnit);
 					bindedEjb3Services.put(serviceContextKey, ejb3Service);
 				}
 
@@ -276,12 +285,6 @@ public class EJB3Deployer
 
 			bundleContext.destroySubcontext(service.getKey().getSimpleName());
 		}
-	}
-
-	private JPAProvider getJPAProvider() throws CoreException
-	{
-		JPAProviderFactory jpaProviderFactory = MobPlugin.getService(JPAProviderFactory.class);
-		return jpaProviderFactory.create();
 	}
 
 	public void setEjbJarXml(EjbJarXml ejbJarXml)

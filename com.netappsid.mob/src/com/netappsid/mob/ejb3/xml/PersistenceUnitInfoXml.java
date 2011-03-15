@@ -42,20 +42,22 @@ public class PersistenceUnitInfoXml implements PersistenceUnitInfo
 	private ClassLoader classLoader;
 	private String persistenceUnitName;
 	private PersistenceUnitTransactionType transactionType;
-
 	private String jtaDatasoure;
-
 	private Properties properties = new Properties();
-
 	private String persistenceProviderClassName;
 
-	public PersistenceUnitInfoXml()
-	{}
+	private final Context context;
+	private final PersistenceUnitUtils persistenceUnitUtils;
+
+	public PersistenceUnitInfoXml(Context context, PersistenceUnitUtils persistenceUnitUtils)
+	{
+		this.context = context;
+		this.persistenceUnitUtils = persistenceUnitUtils;
+	}
 
 	public void fromInputStream(InputStream inputStream) throws DocumentException
 	{
-		fromInputStream(inputStream,
-				PersistenceUnitUtils.getXsltResourcesByPersistenceUnit(Platform.getExtensionRegistry(), MobPlugin.getInstance().getContext()));
+		fromInputStream(inputStream, persistenceUnitUtils.getXsltResourcesByPersistenceUnit());
 	}
 
 	public void fromInputStream(InputStream inputStream, Multimap<String, URL> xsltByUnitName) throws DocumentException
@@ -72,7 +74,7 @@ public class PersistenceUnitInfoXml implements PersistenceUnitInfo
 			{
 				if (xslt != null && !xslt.isEmpty())
 				{
-					document = PersistenceUnitUtils.applyXslt(document, xslt.toArray(new URL[0]));
+					document = persistenceUnitUtils.applyXslt(document, xslt.toArray(new URL[0]));
 				}
 			}
 			catch (Exception e)
@@ -156,7 +158,7 @@ public class PersistenceUnitInfoXml implements PersistenceUnitInfo
 	{
 		try
 		{
-			return (DataSource) MobPlugin.getService(Context.class).lookup(jtaDatasoure);
+			return (DataSource) context.lookup(jtaDatasoure);
 		}
 		catch (NamingException e)
 		{

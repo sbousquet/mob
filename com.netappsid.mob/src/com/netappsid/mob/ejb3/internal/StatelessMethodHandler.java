@@ -3,6 +3,8 @@ package com.netappsid.mob.ejb3.internal;
 import java.lang.reflect.Method;
 import java.util.concurrent.ExecutorService;
 
+import javax.transaction.UserTransaction;
+
 import javassist.util.proxy.MethodHandler;
 
 import com.netappsid.mob.ejb3.EJB3ServiceHandler;
@@ -20,12 +22,14 @@ public class StatelessMethodHandler implements MethodHandler, EJB3ServiceHandler
 	private ExecutorService executorService;
 	private final EJB3BundleUnit bundleUnit;
 	private final Class<?> serviceClass;
+	private final UserTransaction userTransaction;
 
-	public StatelessMethodHandler(Class<?> serviceClass, EJBServiceLink link, ExecutorService executorService, EJB3BundleUnit bundleUnit)
+	public StatelessMethodHandler(Class<?> serviceClass, EJBServiceLink link,UserTransaction userTransaction, ExecutorService executorService, EJB3BundleUnit bundleUnit)
 			throws InstantiationException, IllegalAccessException
 	{
 		this.serviceClass = serviceClass;
 		this.link = link;
+		this.userTransaction = userTransaction;
 		this.executorService = executorService;
 		this.bundleUnit = bundleUnit;
 
@@ -42,7 +46,7 @@ public class StatelessMethodHandler implements MethodHandler, EJB3ServiceHandler
 		
 		Object serviceInstance = statelessPool.get(serviceClass);
 
-		final InvocationHandler ejb3Runnable = new InvocationHandler(link, bundleUnit, serviceInstance, thisMethod, args);
+		final InvocationHandler ejb3Runnable = new InvocationHandler(link,userTransaction, bundleUnit, serviceInstance, thisMethod, args);
 
 		return Thread.currentThread() instanceof EJB3ThreadWorker ? ejb3Runnable.call() : executorService.submit(ejb3Runnable).get();
 	}

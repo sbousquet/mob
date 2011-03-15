@@ -6,6 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.naming.Context;
+import javax.naming.NamingException;
+import javax.naming.RefAddr;
+import javax.naming.Reference;
+import javax.naming.StringRefAddr;
+import javax.transaction.UserTransaction;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
@@ -15,8 +22,12 @@ import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.netappsid.mob.ejb3.jndi.UserTransactionFactory;
+import com.netappsid.mob.ejb3.jndi.UserTransactionRef;
 import com.netappsid.mob.ejb3.osgi.DeployOSGIEJB3Bundle;
 import com.netappsid.mob.ejb3.osgi.EJB3BundleDeployer;
+import com.netappsid.mob.ejb3.osgi.EJB3ExecutorService;
+import com.netappsid.mob.ejb3.osgi.OSGIServiceLookup;
 
 /**
  * 
@@ -32,7 +43,6 @@ public class MobPlugin implements BundleActivator
 	private Map<String, List<EJB3BundleDeployer>> applicationBundleDeployers = new HashMap<String, List<EJB3BundleDeployer>>();
 	private RemoteServicesRegistry remoteServicesRegistry = new RemoteServicesRegistry();
 
-	private BundleContext context;
 
 	/**
 	 * 
@@ -65,15 +75,48 @@ public class MobPlugin implements BundleActivator
 	@Override
 	public void start(BundleContext context) throws Exception
 	{
-		this.context = context;
-
 		if (!"junit".equals(System.getProperty("naid.mode")))
 		{
 			initializeApplicationBundleDeployers();
+			OSGIServiceLookup osgiServiceLookup = new OSGIServiceLookup(context);
+			UserTransaction userTransaction = osgiServiceLookup.getService(UserTransaction.class);
+			Context jndiContext = osgiServiceLookup.getService(Context.class);
+			bindUserTransaction(jndiContext,userTransaction);
+			
+			DeployOSGIEJB3Bundle deployOSGIEJB3Bundle = new DeployOSGIEJB3Bundle(new EJB3ExecutorService(), jndiContext,osgiServiceLookup.getService(JPAProviderFactory.class),osgiServiceLookup.getService(DatasourceProvider.class));
+			
 			for (Map.Entry<String, List<EJB3BundleDeployer>> entry : applicationBundleDeployers.entrySet())
 			{
-				DeployOSGIEJB3Bundle.deploy(entry.getKey(), entry.getValue());
+				deployOSGIEJB3Bundle.deploy(entry.getKey(), entry.getValue());
 			}
+		}
+	}
+
+	private void bindUserTransaction(Context context,UserTransaction transaction)
+	{
+		try
+		{
+			Context javaContext = context;
+			try
+			{
+				javaContext = (Context) javaContext.lookup("java:");
+			}
+			catch (NamingException e)
+			{
+				javaContext = javaContext.createSubcontext("java:");
+			}
+
+			RefAddr ra = new UserTransactionRef("UserTransaction", transaction);
+
+			Reference ref = new Reference(UserTransaction.class.getName(), new StringRefAddr("name", "UserTransaction"),
+					UserTransactionFactory.class.getName(), UserTransactionFactory.class.getResource("/").toString());
+			ref.add(ra);
+
+			javaContext.rebind("UserTransaction", ref);
+		}
+		catch (NamingException e)
+		{
+			logger.error(e.getMessage(),e);
 		}
 	}
 
@@ -125,25 +168,6 @@ public class MobPlugin implements BundleActivator
 	private IConfigurationElement[] getEJB3DeployerConfigurationElements()
 	{
 		return Platform.getExtensionRegistry().getConfigurationElementsFor("com.netappsid.mob.ejb3.deployer");
-	}
-
-	public static PackageAdmin getPackageAdmin()
-	{
-		return getService(PackageAdmin.class);
-	}
-
-	public static <T> T getService(Class<T> seviceInterface)
-	{
-		BundleContext bundleContext = instance.getContext();
-		return (T) bundleContext.getService(bundleContext.getServiceReference(seviceInterface.getName()));
-	}
-
-	/**
-	 * @return the context
-	 */
-	public BundleContext getContext()
-	{
-		return context;
 	}
 
 }

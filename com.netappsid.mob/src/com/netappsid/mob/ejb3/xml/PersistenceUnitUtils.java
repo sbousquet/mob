@@ -22,7 +22,18 @@ import com.google.common.collect.Multimap;
 
 public class PersistenceUnitUtils
 {
-	public static Multimap<String, URL> getXsltResourcesByPersistenceUnit(IExtensionRegistry extensionRegistry, BundleContext context)
+	private final IExtensionRegistry extensionRegistry;
+	private final BundleContext context;
+	private final TransformerFactory transformerFactory;
+
+	public PersistenceUnitUtils(BundleContext context,IExtensionRegistry extensionRegistry,TransformerFactory transformerFactory)
+	{
+		this.context = context;
+		this.extensionRegistry = extensionRegistry;
+		this.transformerFactory = transformerFactory;
+	}
+	
+	public Multimap<String, URL> getXsltResourcesByPersistenceUnit()
 	{
 		Multimap<String, URL> xsltByUnit = ArrayListMultimap.create();
 
@@ -40,15 +51,13 @@ public class PersistenceUnitUtils
 
 	}
 
-	public static Document applyXslt(Document document, URL... xslt) throws IOException, TransformerException
+	public Document applyXslt(Document document, URL... xslt) throws IOException, TransformerException
 	{
 		Document temp = document;
 
 		for (URL url : xslt)
 		{
-			// load the transformer using JAXP
-			TransformerFactory factory = TransformerFactory.newInstance();
-			Transformer transformer = factory.newTransformer(new StreamSource(url.openStream()));
+			Transformer transformer = transformerFactory.newTransformer(new StreamSource(url.openStream()));
 
 			// now lets style the given document
 			DocumentSource source = new DocumentSource(temp);

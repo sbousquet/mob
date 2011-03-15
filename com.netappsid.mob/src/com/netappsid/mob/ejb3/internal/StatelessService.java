@@ -12,6 +12,7 @@ import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.naming.NamingException;
 import javax.naming.Reference;
+import javax.transaction.UserTransaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,11 +31,13 @@ public class StatelessService extends AbstractService
 	private static Logger logger = LoggerFactory.getLogger(StatelessService.class);
 	private Class<?> serviceClass;
 	private final Class<?> originalClass;
+	private final UserTransaction userTransaction;
 
-	public StatelessService(ExecutorService executorService, Class<?> serviceClass, EJB3BundleUnit bundleUnit)
+	public StatelessService(ExecutorService executorService,UserTransaction userTransaction, Class<?> serviceClass, EJB3BundleUnit bundleUnit)
 	{
 		super(executorService, bundleUnit);
-		originalClass = serviceClass;
+		this.userTransaction = userTransaction;
+		this.originalClass = serviceClass;
 		try
 		{
 			this.serviceClass = modifyClass(serviceClass);
@@ -155,7 +158,7 @@ public class StatelessService extends AbstractService
 	@Override
 	protected MethodHandler getMethodHandler(Class<?> originalClass) throws InstantiationException, IllegalAccessException
 	{
-		return new StatelessMethodHandler(originalClass, getEjbLink(), getExecutor(), getBundleUnit());
+		return new StatelessMethodHandler(originalClass, getEjbLink(),userTransaction, getExecutor(), getBundleUnit());
 	}
 
 }

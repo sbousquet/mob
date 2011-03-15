@@ -18,22 +18,19 @@ public class Pool<T>
 
 	private AtomicInteger sizeLimit = new AtomicInteger(100);
 
-	private final Class<T> beanClass;
-
 	private ArrayBlockingQueue<T> availables = new ArrayBlockingQueue<T>(sizeLimit.get(), false);
 
 	private AtomicInteger count = new AtomicInteger(0);
 
-	private final EJB3LifecycleManager lifecycleManager;
+	private final PoolItemFactory<T> factory;
 
 	/**
 	 * @param clazz
-	 * @param lifecycleManager 
+	 * @param factory 
 	 */
-	public Pool(Class<T> clazz, EJB3LifecycleManager lifecycleManager)
+	public Pool(PoolItemFactory<T> factory)
 	{
-		this.beanClass = clazz;
-		this.lifecycleManager = lifecycleManager;
+		this.factory = factory;
 	}
 
 	/**
@@ -53,7 +50,7 @@ public class Pool<T>
 
 		if (created < sizeLimit.get())
 		{
-			return lifecycleManager.create(beanClass);
+			return factory.create();
 		}
 		// the limit is reach
 		else
@@ -70,7 +67,7 @@ public class Pool<T>
 	{
 		if (!availables.offer(toRecycle))
 		{
-			lifecycleManager.destroy(toRecycle);
+			factory.destroy(toRecycle);
 		}
 	}
 

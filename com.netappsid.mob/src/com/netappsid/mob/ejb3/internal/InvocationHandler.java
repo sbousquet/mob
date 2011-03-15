@@ -13,7 +13,6 @@ import java.util.concurrent.Callable;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.interceptor.InvocationContext;
-import javax.naming.NamingException;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
@@ -21,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netappsid.mob.ejb3.EJBServiceLink;
-import com.netappsid.mob.ejb3.MobPlugin;
 import com.netappsid.mob.ejb3.internal.interceptors.InterceptorHandler;
 
 /**
@@ -45,6 +43,8 @@ public class InvocationHandler implements Callable<Object>
 	private Object[] args;
 
 	private final EJB3BundleUnit bundleUnit;
+
+	private final UserTransaction userTransaction;
 
 	private class InvocationContextImpl implements InvocationContext
 	{
@@ -104,13 +104,15 @@ public class InvocationHandler implements Callable<Object>
 			args = parameters;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.interceptor.InvocationContext#getTimer()
 		 */
 		@Override
 		public Object getTimer()
 		{
-			//TODO implements timer
+			// TODO implements timer
 			return null;
 		}
 
@@ -119,14 +121,14 @@ public class InvocationHandler implements Callable<Object>
 	/**
 	 * 
 	 */
-	public InvocationHandler(EJBServiceLink link, EJB3BundleUnit bundleUnit, Object self, Method thisMethod, Object[] args)
+	public InvocationHandler(EJBServiceLink link, UserTransaction userTransaction, EJB3BundleUnit bundleUnit, Object self, Method thisMethod, Object[] args)
 	{
 		this.link = link;
+		this.userTransaction = userTransaction;
 		this.bundleUnit = bundleUnit;
 		this.self = self;
 		this.thisMethod = thisMethod;
 		this.args = args;
-
 	}
 
 	/*
@@ -142,8 +144,6 @@ public class InvocationHandler implements Callable<Object>
 
 			if (isTransactionRequired(thisMethod))
 			{
-				UserTransaction userTransaction = getUserTransaction();
-
 				if (userTransaction.getStatus() == Status.STATUS_NO_TRANSACTION)
 				{
 					args = link.enter(args);
@@ -177,9 +177,7 @@ public class InvocationHandler implements Callable<Object>
 				if (isHasStartTransaction())
 				{
 					bundleUnit.flush();
-
-					UserTransaction toCommit = getUserTransaction();
-					toCommit.commit();
+					userTransaction.commit();
 
 				}
 
@@ -192,8 +190,6 @@ public class InvocationHandler implements Callable<Object>
 			}
 			else
 			{
-
-				UserTransaction userTransaction = getUserTransaction();
 
 				bundleUnit.inject(self);
 
@@ -214,12 +210,11 @@ public class InvocationHandler implements Callable<Object>
 		}
 		catch (Exception e)
 		{
-			logger.error(e.getMessage(),e);
+			logger.error(e.getMessage(), e);
 
-			//you want to rollback only when you has start the transaction 
+			// you want to rollback only when you has start the transaction
 			if (isHasStartTransaction())
 			{
-				UserTransaction userTransaction = getUserTransaction();
 				userTransaction.rollback();
 			}
 			throw e;
@@ -227,7 +222,7 @@ public class InvocationHandler implements Callable<Object>
 		finally
 		{
 			bundleUnit.getStatelessPool().recycle(self);
-			
+
 			if (isHasStartTransaction())
 			{
 				bundleUnit.close();
@@ -235,15 +230,6 @@ public class InvocationHandler implements Callable<Object>
 			}
 		}
 
-	}
-
-	/**
-	 * @return
-	 * @throws NamingException
-	 */
-	protected UserTransaction getUserTransaction() throws NamingException
-	{
-		return MobPlugin.getService(UserTransaction.class);
 	}
 
 	/**
@@ -294,13 +280,12 @@ public class InvocationHandler implements Callable<Object>
 	}
 
 	/**
-	 * @param hasStartTransaction the hasStartTransaction to set
+	 * @param hasStartTransaction
+	 *            the hasStartTransaction to set
 	 */
 	private void setHasStartTransaction(boolean hasStartTransaction)
 	{
 		this.hasStartTransaction = hasStartTransaction;
 	}
-
-	
 
 }

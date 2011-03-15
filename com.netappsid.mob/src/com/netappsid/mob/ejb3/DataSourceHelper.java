@@ -16,6 +16,12 @@ import org.slf4j.LoggerFactory;
 public class DataSourceHelper
 {
 	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(DataSourceHelper.class);
+	private final DatasourceProvider datasourceProvider;
+
+	public DataSourceHelper(DatasourceProvider service)
+	{
+		this.datasourceProvider = service;
+	}
 
 	/**
 	 * 
@@ -23,7 +29,7 @@ public class DataSourceHelper
 	 * <driver-class>net.sourceforge.jtds.jdbc.Driver</driver-class> <user-name>sa</user-name> <password>victor</password> </local-tx-datasource> </datasources>
 	 * 
 	 */
-	public static void parseXmlDataSourceAndBindIt(Document document, Context context) throws ClassNotFoundException
+	public void parseXmlDataSourceAndBindIt(Document document, Context context) throws ClassNotFoundException
 	{
 		final Element dataSource = document.getRootElement().element("local-tx-datasource");
 		final String jdbcUrl = dataSource.elementText("connection-url");
@@ -32,13 +38,12 @@ public class DataSourceHelper
 		String uniqueRessourceName = dataSource.elementText("jndi-name");
 		String driverClassName = dataSource.elementText("driver-class");
 
-		DatasourceProvider service = MobPlugin.getService(DatasourceProvider.class);
-		DataSource ds = service.create(uniqueRessourceName, driverClassName, jdbcUrl, user, password);
-		
+		DataSource ds = datasourceProvider.create(uniqueRessourceName, driverClassName, jdbcUrl, user, password);
+
 		rebindInitialContextToDataSource(context, uniqueRessourceName, ds);
 	}
 
-	private static void rebindInitialContextToDataSource(Context context, String jndiName, DataSource dataSource)
+	private void rebindInitialContextToDataSource(Context context, String jndiName, DataSource dataSource)
 	{
 		Context javaContext = null;
 		try
@@ -61,7 +66,7 @@ public class DataSourceHelper
 		{
 			LOGGER.error(e1.getMessage(), e1);
 		}
-		
+
 	}
 
 }

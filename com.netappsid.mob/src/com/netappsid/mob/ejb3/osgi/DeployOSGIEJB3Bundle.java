@@ -12,19 +12,12 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.RefAddr;
 import javax.naming.Reference;
@@ -40,14 +33,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netappsid.mob.ejb3.DataSourceHelper;
-import com.netappsid.mob.ejb3.MobPlugin;
-import com.netappsid.mob.ejb3.internal.EJB3ThreadWorker;
+import com.netappsid.mob.ejb3.DatasourceProvider;
+import com.netappsid.mob.ejb3.JPAProviderFactory;
 import com.netappsid.mob.ejb3.internal.EJb3AnnotationVisitor;
 import com.netappsid.mob.ejb3.internal.classloader.MultiBundleClassLoader;
 import com.netappsid.mob.ejb3.jndi.UserTransactionFactory;
 import com.netappsid.mob.ejb3.jndi.UserTransactionRef;
 import com.netappsid.mob.ejb3.xml.EjbJarXml;
 import com.netappsid.mob.ejb3.xml.PersistenceUnitInfoXml;
+import com.netappsid.mob.ejb3.xml.PersistenceUnitUtils;
 
 /**
  * @author xjodoin
@@ -59,92 +53,43 @@ public class DeployOSGIEJB3Bundle
 {
 	private static Logger logger = LoggerFactory.getLogger(DeployOSGIEJB3Bundle.class);
 
-	private static ExecutorService executorService;
-
-	private static boolean isInit = false;
-
-	private static boolean userTransactionBind;
+	private final EJB3ExecutorService executorService;
+	private final Context context;
+	private final JPAProviderFactory jpaProviderFactory;
+	private final DatasourceProvider dataSourceProvider;
+	private final UserTransaction userTransaction;
 
 	/**
 	 * 
 	 */
-	private DeployOSGIEJB3Bundle()
-	{}
-
-	public static void init()
+	public DeployOSGIEJB3Bundle(EJB3ExecutorService ejb3ExecutorService, UserTransaction userTransaction, Context context,
+			JPAProviderFactory jpaProviderFactory, DatasourceProvider dataSourceProvider)
 	{
-		if (!isInit)
-		{
-			executorService = Executors.newCachedThreadPool(new ThreadFactory()
-				{
-
-					@Override
-					public Thread newThread(Runnable r)
-					{
-						return new EJB3ThreadWorker(r);
-					}
-				});
-
-			isInit = true;
-		}
-		
-		// bind the usertransaction manager
-		if (!userTransactionBind)
-		{
-
-			try
-			{
-				Context javaContext = MobPlugin.getService(Context.class);
-				try
-				{
-					javaContext = (Context) javaContext.lookup("java:");
-				}
-				catch (NamingException e)
-				{
-					javaContext = javaContext.createSubcontext("java:");
-				}
-
-				UserTransaction transaction = MobPlugin.getService(UserTransaction.class);
-				RefAddr ra = new UserTransactionRef("UserTransaction", transaction);
-
-				Reference ref = new Reference(UserTransaction.class.getName(), new StringRefAddr("name", "UserTransaction"), UserTransactionFactory.class
-						.getName(), UserTransactionFactory.class.getResource("/").toString());
-				ref.add(ra);
-
-				javaContext.rebind("UserTransaction", ref);
-
-			}
-			catch (NamingException e)
-			{
-				logger.error(e.getMessage(), e);
-			}
-			userTransactionBind = true;
-		}
+		this.executorService = ejb3ExecutorService;
+		this.userTransaction = userTransaction;
+		this.context = context;
+		this.jpaProviderFactory = jpaProviderFactory;
+		this.dataSourceProvider = dataSourceProvider;
 
 	}
 
-	public static ExecutorService getExecutorService()
-	{
-		return executorService;
-	}
-
-	public static void deploy(Bundle bundle, String baseName, String packageRestriction) throws ClassNotFoundException
+	public void deploy(Bundle bundle, String baseName, String packageRestriction) throws ClassNotFoundException
 	{
 		deploy(bundle, baseName, packageRestriction, new ArrayList<Class<?>>());
 	}
 
-	public static void deploy(Bundle bundle, String baseName, String packageRestriction, List<Class<?>> ejb3ClassList) throws ClassNotFoundException
+	public void deploy(Bundle bundle, String baseName, String packageRestriction, List<Class<?>> ejb3ClassList) throws ClassNotFoundException
 	{
 		EJB3BundleDeployer bundleDeployer = new EJB3BundleDeployer(bundle, packageRestriction, ejb3ClassList);
 		deploy(baseName, Arrays.asList(bundleDeployer));
 	}
 
-	public static void deploy(String applicationName, List<EJB3BundleDeployer> bundleDeployers)
+	public void deploy(String applicationName, List<EJB3BundleDeployer> bundleDeployers)
 	{
-		init();
-
-		EJB3Deployer deployer = new EJB3Deployer(executorService, applicationName);
+		EJB3Deployer deployer = new EJB3Deployer(executorService, userTransaction, context, jpaProviderFactory, applicationName);
 		Set<Bundle> bundles = new HashSet<Bundle>();
+
+		DataSourceHelper dataSourceHelper = new DataSourceHelper(dataSourceProvider);
 
 		for (EJB3BundleDeployer bundleDeployer : bundleDeployers)
 		{
@@ -159,7 +104,7 @@ public class DeployOSGIEJB3Bundle
 					URL url = datasources.nextElement();
 					try
 					{
-						DataSourceHelper.parseXmlDataSourceAndBindIt(new SAXReader().read(url.openStream()), MobPlugin.getService(Context.class));
+						dataSourceHelper.parseXmlDataSourceAndBindIt(new SAXReader().read(url.openStream()), context);
 					}
 					catch (Exception e)
 					{
@@ -179,7 +124,7 @@ public class DeployOSGIEJB3Bundle
 					while (persistenceFiles.hasMoreElements())
 					{
 						URL url = persistenceFiles.nextElement();
-						PersistenceUnitInfoXml persistenceUnitInfoXml = new PersistenceUnitInfoXml();
+						PersistenceUnitInfoXml persistenceUnitInfoXml = new PersistenceUnitInfoXml(context,new PersistenceUnitUtils(context, extensionRegistry, transformerFactory));
 						try
 						{
 							persistenceUnitInfoXml.fromInputStream(url.openStream());

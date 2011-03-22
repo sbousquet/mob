@@ -16,10 +16,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
+import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,13 +56,14 @@ public class EJB3Deployer
 
 	private final Context context;
 	private final JPAProviderFactory jpaProviderFactory;
-
 	private final UserTransaction userTransaction;
+	private final PackageAdmin packageAdmin;
 
-	public EJB3Deployer(ExecutorService executorService, UserTransaction userTransaction, Context context, JPAProviderFactory jpaProviderFactory,
-			String baseName)
+	public EJB3Deployer(ExecutorService executorService, PackageAdmin packageAdmin, UserTransaction userTransaction, Context context,
+			JPAProviderFactory jpaProviderFactory, String baseName)
 	{
 		this.executorService = executorService;
+		this.packageAdmin = packageAdmin;
 		this.userTransaction = userTransaction;
 		this.context = context;
 		this.jpaProviderFactory = jpaProviderFactory;
@@ -215,7 +213,7 @@ public class EJB3Deployer
 				}
 				else
 				{
-					ejb3Service = new StatelessService(executorService, userTransaction, serviceEntry.getKey(), bundleUnit);
+					ejb3Service = new StatelessService(executorService, packageAdmin, userTransaction, serviceEntry.getKey(), bundleUnit);
 					bindedEjb3Services.put(serviceContextKey, ejb3Service);
 				}
 

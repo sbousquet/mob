@@ -4,8 +4,8 @@
 package com.netappsid.mob.ejb3.io;
 
 import org.osgi.framework.Bundle;
+import org.osgi.service.packageadmin.PackageAdmin;
 
-import com.netappsid.mob.ejb3.MobPlugin;
 import com.netappsid.mob.ejb3.internal.classloader.OSGIClassLoader;
 
 /**
@@ -18,19 +18,26 @@ import com.netappsid.mob.ejb3.internal.classloader.OSGIClassLoader;
 public class OSGIClassResolver implements IMultiVersionClassResolver
 {
 
+	private final PackageAdmin packageAdmin;
+
+	public OSGIClassResolver(PackageAdmin packageAdmin)
+	{
+		this.packageAdmin = packageAdmin;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see com.netappsid.ejb3.io.IMultiVersionClassResolver#resolveClass(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Class<?> resolveClass(String className, String versionString,String splitDelimiter) throws ClassNotFoundException
+	public Class<?> resolveClass(String className, String versionString, String splitDelimiter) throws ClassNotFoundException
 	{
 		String[] splits = versionString.split(splitDelimiter);
 
 		String bundleSymname = splits[0];
 		String bundleVersion = splits[1];
-		Bundle[] bundles = MobPlugin.getPackageAdmin().getBundles(bundleSymname, bundleVersion);
+		Bundle[] bundles = packageAdmin.getBundles(bundleSymname, bundleVersion);
 
 		Bundle bundle = null;
 

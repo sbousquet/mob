@@ -22,8 +22,16 @@ import org.slf4j.LoggerFactory;
 public class OSGISerializedUtils
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OSGISerializedUtils.class);
+	private final OSGIClassResolver osgiClassResolver;
+	private final OSGIClassVersionStringProvider osgiClassVersionStringProvider;
+	
+	public OSGISerializedUtils(OSGIClassResolver osgiClassResolver,OSGIClassVersionStringProvider osgiClassVersionStringProvider)
+	{
+		this.osgiClassResolver = osgiClassResolver;
+		this.osgiClassVersionStringProvider = osgiClassVersionStringProvider;
+	}
 
-	public static Object[] deserialize(Object... args) throws Exception
+	public Object[] deserialize(Object... args) throws Exception
 	{
 		ByteArrayInputStream bais = null;
 		Object[] newArgs = new Object[args.length];
@@ -33,7 +41,7 @@ public class OSGISerializedUtils
 			if (args[i] != null)
 			{
 				bais = new ByteArrayInputStream((byte[]) args[i]);
-				newArgs[i] = new OSGIObjectInputStream(bais, new OSGIClassResolver()).readObject();
+				newArgs[i] = new OSGIObjectInputStream(bais, osgiClassResolver).readObject();
 			}
 			else
 			{
@@ -44,7 +52,7 @@ public class OSGISerializedUtils
 		return newArgs;
 	}
 
-	public static Object serialize(Object toSerialize) throws Exception
+	public Object serialize(Object toSerialize) throws Exception
 	{
 		ByteArrayOutputStream baos = null;
 		ObjectOutputStream oos = null;
@@ -54,7 +62,7 @@ public class OSGISerializedUtils
 		if (toSerialize != null)
 		{
 			baos = new ByteArrayOutputStream();
-			oos = new OSGIObjectOutputStream(baos, new OSGIClassVersionStringProvider());
+			oos = new OSGIObjectOutputStream(baos,osgiClassVersionStringProvider);
 			oos.writeObject(toSerialize);
 
 			result = baos.toByteArray();
@@ -85,7 +93,7 @@ public class OSGISerializedUtils
 	 * @param args
 	 * @return
 	 */
-	public static Object[] serializeEachObject(Object[] args)
+	public Object[] serializeEachObject(Object[] args)
 	{
 		Object[] serialized = new Object[args.length];
 
@@ -108,7 +116,7 @@ public class OSGISerializedUtils
 	 * @param args
 	 * @return
 	 */
-	public static Object[] deserializeEachObject(Object[] args)
+	public Object[] deserializeEachObject(Object[] args)
 	{
 		Object[] deserialized = new Object[args.length];
 

@@ -12,8 +12,10 @@ import javax.naming.RefAddr;
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 import javax.transaction.UserTransaction;
+import javax.xml.transform.TransformerFactory;
 
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -28,6 +30,7 @@ import com.netappsid.mob.ejb3.osgi.DeployOSGIEJB3Bundle;
 import com.netappsid.mob.ejb3.osgi.EJB3BundleDeployer;
 import com.netappsid.mob.ejb3.osgi.EJB3ExecutorService;
 import com.netappsid.mob.ejb3.osgi.OSGIServiceLookup;
+import com.netappsid.mob.ejb3.xml.PersistenceUnitUtils;
 
 /**
  * 
@@ -42,7 +45,6 @@ public class MobPlugin implements BundleActivator
 
 	private Map<String, List<EJB3BundleDeployer>> applicationBundleDeployers = new HashMap<String, List<EJB3BundleDeployer>>();
 	private RemoteServicesRegistry remoteServicesRegistry = new RemoteServicesRegistry();
-
 
 	/**
 	 * 
@@ -81,10 +83,16 @@ public class MobPlugin implements BundleActivator
 			OSGIServiceLookup osgiServiceLookup = new OSGIServiceLookup(context);
 			UserTransaction userTransaction = osgiServiceLookup.getService(UserTransaction.class);
 			Context jndiContext = osgiServiceLookup.getService(Context.class);
-			bindUserTransaction(jndiContext,userTransaction);
-			
-			DeployOSGIEJB3Bundle deployOSGIEJB3Bundle = new DeployOSGIEJB3Bundle(new EJB3ExecutorService(), jndiContext,osgiServiceLookup.getService(JPAProviderFactory.class),osgiServiceLookup.getService(DatasourceProvider.class));
-			
+			bindUserTransaction(jndiContext, userTransaction);
+			PackageAdmin packageAdmin = osgiServiceLookup.getService(PackageAdmin.class);
+
+			PersistenceUnitUtils persistenceUnitUtils = new PersistenceUnitUtils(context, osgiServiceLookup.getService(IExtensionRegistry.class),
+					TransformerFactory.newInstance());
+
+			DeployOSGIEJB3Bundle deployOSGIEJB3Bundle = new DeployOSGIEJB3Bundle(new EJB3ExecutorService(), userTransaction, jndiContext,
+					osgiServiceLookup.getService(JPAProviderFactory.class), osgiServiceLookup.getService(DatasourceProvider.class), persistenceUnitUtils,
+					packageAdmin);
+
 			for (Map.Entry<String, List<EJB3BundleDeployer>> entry : applicationBundleDeployers.entrySet())
 			{
 				deployOSGIEJB3Bundle.deploy(entry.getKey(), entry.getValue());
@@ -92,7 +100,7 @@ public class MobPlugin implements BundleActivator
 		}
 	}
 
-	private void bindUserTransaction(Context context,UserTransaction transaction)
+	private void bindUserTransaction(Context context, UserTransaction transaction)
 	{
 		try
 		{
@@ -116,7 +124,7 @@ public class MobPlugin implements BundleActivator
 		}
 		catch (NamingException e)
 		{
-			logger.error(e.getMessage(),e);
+			logger.error(e.getMessage(), e);
 		}
 	}
 

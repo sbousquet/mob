@@ -7,6 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 
+import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +28,16 @@ public class FakeRemoteEJBServiceLink implements EJBServiceLink
 {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FakeRemoteEJBServiceLink.class);
-	/* (non-Javadoc)
+	private final PackageAdmin admin;
+
+	public FakeRemoteEJBServiceLink(PackageAdmin admin)
+	{
+		this.admin = admin;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.netappsid.ejb3.EJBServiceLink#enter(java.lang.Object[])
 	 */
 	@Override
@@ -44,7 +54,9 @@ public class FakeRemoteEJBServiceLink implements EJBServiceLink
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.netappsid.ejb3.EJBServiceLink#exit(java.lang.Object)
 	 */
 	@Override
@@ -60,9 +72,8 @@ public class FakeRemoteEJBServiceLink implements EJBServiceLink
 		}
 		return null;
 	}
-	
-	
-	private static Object[] serializeDeserialize(Object... args) throws Exception
+
+	private Object[] serializeDeserialize(Object... args) throws Exception
 	{
 		ByteArrayOutputStream baos = null;
 		ByteArrayInputStream bais = null;
@@ -74,11 +85,11 @@ public class FakeRemoteEJBServiceLink implements EJBServiceLink
 			if (args[i] != null)
 			{
 				baos = new ByteArrayOutputStream();
-				oos = new OSGIObjectOutputStream(baos, new OSGIClassVersionStringProvider());
+				oos = new OSGIObjectOutputStream(baos, new OSGIClassVersionStringProvider(admin));
 				oos.writeObject(args[i]);
 
 				bais = new ByteArrayInputStream(baos.toByteArray());
-				newArgs[i] = new OSGIObjectInputStream(bais, new OSGIClassResolver()).readObject();
+				newArgs[i] = new OSGIObjectInputStream(bais, new OSGIClassResolver(admin)).readObject();
 			}
 			else
 			{

@@ -18,10 +18,6 @@ import javax.ejb.Remote;
 import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 import javax.naming.Context;
-import javax.naming.NamingException;
-import javax.naming.RefAddr;
-import javax.naming.Reference;
-import javax.naming.StringRefAddr;
 import javax.persistence.Entity;
 import javax.transaction.UserTransaction;
 
@@ -29,6 +25,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 import org.objectweb.asm.ClassReader;
 import org.osgi.framework.Bundle;
+import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +34,6 @@ import com.netappsid.mob.ejb3.DatasourceProvider;
 import com.netappsid.mob.ejb3.JPAProviderFactory;
 import com.netappsid.mob.ejb3.internal.EJb3AnnotationVisitor;
 import com.netappsid.mob.ejb3.internal.classloader.MultiBundleClassLoader;
-import com.netappsid.mob.ejb3.jndi.UserTransactionFactory;
-import com.netappsid.mob.ejb3.jndi.UserTransactionRef;
 import com.netappsid.mob.ejb3.xml.EjbJarXml;
 import com.netappsid.mob.ejb3.xml.PersistenceUnitInfoXml;
 import com.netappsid.mob.ejb3.xml.PersistenceUnitUtils;
@@ -58,19 +53,22 @@ public class DeployOSGIEJB3Bundle
 	private final JPAProviderFactory jpaProviderFactory;
 	private final DatasourceProvider dataSourceProvider;
 	private final UserTransaction userTransaction;
+	private final PersistenceUnitUtils persistenceUnitUtils;
+	private final PackageAdmin packageAdmin;
 
 	/**
 	 * 
 	 */
 	public DeployOSGIEJB3Bundle(EJB3ExecutorService ejb3ExecutorService, UserTransaction userTransaction, Context context,
-			JPAProviderFactory jpaProviderFactory, DatasourceProvider dataSourceProvider)
+			JPAProviderFactory jpaProviderFactory, DatasourceProvider dataSourceProvider, PersistenceUnitUtils persistenceUnitUtils, PackageAdmin packageAdmin)
 	{
 		this.executorService = ejb3ExecutorService;
 		this.userTransaction = userTransaction;
 		this.context = context;
 		this.jpaProviderFactory = jpaProviderFactory;
 		this.dataSourceProvider = dataSourceProvider;
-
+		this.persistenceUnitUtils = persistenceUnitUtils;
+		this.packageAdmin = packageAdmin;
 	}
 
 	public void deploy(Bundle bundle, String baseName, String packageRestriction) throws ClassNotFoundException
@@ -86,7 +84,7 @@ public class DeployOSGIEJB3Bundle
 
 	public void deploy(String applicationName, List<EJB3BundleDeployer> bundleDeployers)
 	{
-		EJB3Deployer deployer = new EJB3Deployer(executorService, userTransaction, context, jpaProviderFactory, applicationName);
+		EJB3Deployer deployer = new EJB3Deployer(executorService, packageAdmin, userTransaction, context, jpaProviderFactory, applicationName);
 		Set<Bundle> bundles = new HashSet<Bundle>();
 
 		DataSourceHelper dataSourceHelper = new DataSourceHelper(dataSourceProvider);
@@ -124,7 +122,7 @@ public class DeployOSGIEJB3Bundle
 					while (persistenceFiles.hasMoreElements())
 					{
 						URL url = persistenceFiles.nextElement();
-						PersistenceUnitInfoXml persistenceUnitInfoXml = new PersistenceUnitInfoXml(context,new PersistenceUnitUtils(context, extensionRegistry, transformerFactory));
+						PersistenceUnitInfoXml persistenceUnitInfoXml = new PersistenceUnitInfoXml(context, persistenceUnitUtils);
 						try
 						{
 							persistenceUnitInfoXml.fromInputStream(url.openStream());

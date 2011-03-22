@@ -14,11 +14,11 @@ import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.transaction.UserTransaction;
 
+import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netappsid.mob.ejb3.jndi.Ejb3Ref;
-
 
 /**
  * @author xjodoin
@@ -33,9 +33,10 @@ public class StatelessService extends AbstractService
 	private final Class<?> originalClass;
 	private final UserTransaction userTransaction;
 
-	public StatelessService(ExecutorService executorService,UserTransaction userTransaction, Class<?> serviceClass, EJB3BundleUnit bundleUnit)
+	public StatelessService(ExecutorService executorService, PackageAdmin packageAdmin, UserTransaction userTransaction, Class<?> serviceClass,
+			EJB3BundleUnit bundleUnit)
 	{
-		super(executorService, bundleUnit);
+		super(executorService, packageAdmin, bundleUnit);
 		this.userTransaction = userTransaction;
 		this.originalClass = serviceClass;
 		try
@@ -58,8 +59,10 @@ public class StatelessService extends AbstractService
 	{
 		return getProxy();
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.netappsid.mod.ejb3.internal.EJb3Service#getProxy()
 	 */
 	@Override
@@ -158,7 +161,7 @@ public class StatelessService extends AbstractService
 	@Override
 	protected MethodHandler getMethodHandler(Class<?> originalClass) throws InstantiationException, IllegalAccessException
 	{
-		return new StatelessMethodHandler(originalClass, getEjbLink(),userTransaction, getExecutor(), getBundleUnit());
+		return new StatelessMethodHandler(originalClass, getEjbLink(), userTransaction, getExecutor(), getBundleUnit());
 	}
 
 }

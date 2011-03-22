@@ -11,7 +11,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -64,11 +63,11 @@ public class JPAHelper
 		{
 			Method readMethod = propertyDescriptor.getReadMethod();
 
-			if(readMethod == null)
+			if (readMethod == null)
 			{
 				continue;
 			}
-			
+
 			if (readMethod.isAnnotationPresent(OneToMany.class) || readMethod.isAnnotationPresent(OneToOne.class)
 					|| readMethod.isAnnotationPresent(ManyToMany.class) || readMethod.isAnnotationPresent(ManyToOne.class))
 			{

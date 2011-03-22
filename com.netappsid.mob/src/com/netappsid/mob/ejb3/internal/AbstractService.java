@@ -14,6 +14,7 @@ import javassist.util.proxy.ProxyFactory;
 import javax.naming.RefAddr;
 import javax.naming.Referenceable;
 
+import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,11 +36,13 @@ public abstract class AbstractService extends RefAddr implements EJb3Service, Re
 	private ExecutorService executor;
 
 	private final EJB3BundleUnit bundleUnit;
+	private final PackageAdmin packageAdmin;
 
-	public AbstractService(ExecutorService executorService,EJB3BundleUnit bundleUnit)
+	public AbstractService(ExecutorService executorService,PackageAdmin packageAdmin,EJB3BundleUnit bundleUnit)
 	{
 		super(EJB3SERVICE);
 		executor = executorService;
+		this.packageAdmin = packageAdmin;
 		this.bundleUnit = bundleUnit;
 	}
 
@@ -75,7 +78,7 @@ public abstract class AbstractService extends RefAddr implements EJb3Service, Re
 	{
 		if (ejbLink == null)
 		{
-			ejbLink = new FakeRemoteEJBServiceLink();
+			ejbLink = new FakeRemoteEJBServiceLink(packageAdmin);
 		}
 		return ejbLink;
 	}

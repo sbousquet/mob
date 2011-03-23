@@ -26,6 +26,7 @@ import com.netappsid.mob.ejb3.MobPlugin;
 import com.netappsid.mob.ejb3.internal.BundleUnitManager;
 import com.netappsid.mob.ejb3.internal.EJB3BundleUnit;
 import com.netappsid.mob.ejb3.internal.EJb3Service;
+import com.netappsid.mob.ejb3.internal.FakeRemoteEJBServiceLink;
 import com.netappsid.mob.ejb3.internal.StatelessService;
 import com.netappsid.mob.ejb3.internal.interceptors.Interceptors;
 import com.netappsid.mob.ejb3.jndi.JNDIEntityManager;
@@ -213,7 +214,8 @@ public class EJB3Deployer
 				}
 				else
 				{
-					ejb3Service = new StatelessService(executorService, packageAdmin, userTransaction, serviceEntry.getKey(), bundleUnit);
+					ejb3Service = new StatelessService(executorService, new FakeRemoteEJBServiceLink(packageAdmin), userTransaction, serviceEntry.getKey(),
+							bundleUnit);
 					bindedEjb3Services.put(serviceContextKey, ejb3Service);
 				}
 

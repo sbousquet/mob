@@ -36,13 +36,12 @@ public abstract class AbstractService extends RefAddr implements EJb3Service, Re
 	private ExecutorService executor;
 
 	private final EJB3BundleUnit bundleUnit;
-	private final PackageAdmin packageAdmin;
 
-	public AbstractService(ExecutorService executorService,PackageAdmin packageAdmin,EJB3BundleUnit bundleUnit)
+	public AbstractService(ExecutorService executorService,EJBServiceLink ejbServiceLink,EJB3BundleUnit bundleUnit)
 	{
 		super(EJB3SERVICE);
 		executor = executorService;
-		this.packageAdmin = packageAdmin;
+		ejbLink = ejbServiceLink;
 		this.bundleUnit = bundleUnit;
 	}
 
@@ -76,10 +75,6 @@ public abstract class AbstractService extends RefAddr implements EJb3Service, Re
 
 	public EJBServiceLink getEjbLink()
 	{
-		if (ejbLink == null)
-		{
-			ejbLink = new FakeRemoteEJBServiceLink(packageAdmin);
-		}
 		return ejbLink;
 	}
 

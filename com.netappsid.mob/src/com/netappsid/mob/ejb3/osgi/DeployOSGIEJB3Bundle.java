@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
@@ -82,14 +83,14 @@ public class DeployOSGIEJB3Bundle
 		deploy(baseName, Arrays.asList(bundleDeployer));
 	}
 
-	public void deploy(String applicationName, List<EJB3BundleDeployer> bundleDeployers)
+	public void deploy(String applicationName, Collection<EJB3BundleDeployer> collection)
 	{
 		EJB3Deployer deployer = new EJB3Deployer(executorService, packageAdmin, userTransaction, context, jpaProviderFactory, applicationName);
 		Set<Bundle> bundles = new HashSet<Bundle>();
 
 		DataSourceHelper dataSourceHelper = new DataSourceHelper(dataSourceProvider);
 
-		for (EJB3BundleDeployer bundleDeployer : bundleDeployers)
+		for (EJB3BundleDeployer bundleDeployer : collection)
 		{
 			bundles.add(bundleDeployer.getBundle());
 

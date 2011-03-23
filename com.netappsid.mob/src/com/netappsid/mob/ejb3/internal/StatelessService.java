@@ -18,6 +18,7 @@ import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.netappsid.mob.ejb3.EJBServiceLink;
 import com.netappsid.mob.ejb3.jndi.Ejb3Ref;
 
 /**
@@ -33,10 +34,10 @@ public class StatelessService extends AbstractService
 	private final Class<?> originalClass;
 	private final UserTransaction userTransaction;
 
-	public StatelessService(ExecutorService executorService, PackageAdmin packageAdmin, UserTransaction userTransaction, Class<?> serviceClass,
+	public StatelessService(ExecutorService executorService, EJBServiceLink ejbServiceLink, UserTransaction userTransaction, Class<?> serviceClass,
 			EJB3BundleUnit bundleUnit)
 	{
-		super(executorService, packageAdmin, bundleUnit);
+		super(executorService, ejbServiceLink, bundleUnit);
 		this.userTransaction = userTransaction;
 		this.originalClass = serviceClass;
 		try

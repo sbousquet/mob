@@ -51,8 +51,8 @@ public class EJB3BundleUnitTest
 		EJB3BundleUnit ejb3BundleUnit = new EJB3BundleUnit(mock(Context.class), "test");
 		UserTransaction userTransaction = mock(UserTransaction.class);
 		PackageAdmin packageAdmin = mock(PackageAdmin.class);
-		ejb3BundleUnit.addService(new StatelessService(newSingleThreadExecutor,packageAdmin, userTransaction, TestServiceBean.class, ejb3BundleUnit));
-		ejb3BundleUnit.addService(new StatelessService(newSingleThreadExecutor,packageAdmin, userTransaction, TestInjectServiceBean.class, ejb3BundleUnit));
+		ejb3BundleUnit.addService(new StatelessService(newSingleThreadExecutor,new FakeRemoteEJBServiceLink(packageAdmin), userTransaction, TestServiceBean.class, ejb3BundleUnit));
+		ejb3BundleUnit.addService(new StatelessService(newSingleThreadExecutor,new FakeRemoteEJBServiceLink(packageAdmin), userTransaction, TestInjectServiceBean.class, ejb3BundleUnit));
 
 		TestInjectServiceBean create = ejb3BundleUnit.create(TestInjectServiceBean.class);
 		assertTrue(create.isInject());

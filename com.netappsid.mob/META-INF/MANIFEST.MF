@@ -43,4 +43,3 @@ Import-Package: com.google.common.collect,
  org.slf4j
 Bundle-Activator: com.netappsid.mob.ejb3.MobPlugin
 Service-Component: OSGI-INF/ejbcontainerprovider.xml
-Bundle-ActivationPolicy: lazy

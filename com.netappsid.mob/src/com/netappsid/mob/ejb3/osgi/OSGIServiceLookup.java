@@ -1,5 +1,7 @@
 package com.netappsid.mob.ejb3.osgi;
 
+import java.util.concurrent.Exchanger;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
@@ -7,41 +9,53 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OSGIServiceLookup implements ServiceListener
+public class OSGIServiceLookup<T> implements ServiceListener
 {
 	private static Logger logger = LoggerFactory.getLogger(OSGIServiceLookup.class);
 
 	private final BundleContext context;
-	private final Object wait = new Object();
+	private final Class<? extends T> service;
+	private final Exchanger<ServiceReference> serviceReferenceExchanger;
 
-	public OSGIServiceLookup(BundleContext context)
+	public OSGIServiceLookup(BundleContext context, Class<? extends T> service)
 	{
 		this.context = context;
-		context.addServiceListener(this);
+		this.service = service;
+		this.serviceReferenceExchanger = new Exchanger<ServiceReference>();
+	}
+	
+	OSGIServiceLookup(BundleContext context, Class<? extends T> service, Exchanger<ServiceReference> serviceReferenceExchanger)
+	{
+		this.context = context;
+		this.service = service;
+		this.serviceReferenceExchanger = serviceReferenceExchanger;
 	}
 
-	public <T> T getService(Class<T> seviceInterface)
+	public T getService()
 	{
-		ServiceReference serviceReference = context.getServiceReference(seviceInterface.getName());
+		ServiceReference serviceReference = context.getServiceReference(service.getName());
 
 		if (serviceReference == null)
 		{
-			while (serviceReference == null)
-			{
-				synchronized (wait)
-				{
-					try
-					{
-						wait.wait(1000);
-					}
-					catch (InterruptedException e)
-					{
-						logger.error(e.getMessage(), e);
-					}
-				}
+			context.addServiceListener(this);
+			serviceReference = context.getServiceReference(service.getName());
 
-				serviceReference = context.getServiceReference(seviceInterface.getName());
+			if (serviceReference != null)
+			{
+				context.removeServiceListener(this);
+				return (T) context.getService(serviceReference);
 			}
+
+			try
+			{
+				serviceReference = serviceReferenceExchanger.exchange(null);
+			}
+			catch (InterruptedException e)
+			{
+				logger.error(e.getMessage(), e);
+			}
+			
+			context.removeServiceListener(this);
 		}
 
 		return (T) context.getService(serviceReference);
@@ -50,7 +64,16 @@ public class OSGIServiceLookup implements ServiceListener
 	@Override
 	public void serviceChanged(ServiceEvent event)
 	{
-		wait.notifyAll();
+		if (event.getServiceReference().isAssignableTo(context.getBundle(), service.getName()))
+		{
+			try
+			{
+				serviceReferenceExchanger.exchange(event.getServiceReference());
+			}
+			catch (InterruptedException e)
+			{
+				logger.error(e.getMessage(), e);
+			}
+		}
 	}
-
 }

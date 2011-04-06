@@ -1,37 +1,21 @@
 package com.netappsid.mob.ejb3;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.naming.Context;
-import javax.naming.NamingException;
-import javax.naming.RefAddr;
-import javax.naming.Reference;
-import javax.naming.StringRefAddr;
 import javax.transaction.UserTransaction;
-import javax.xml.transform.TransformerFactory;
 
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.netappsid.mob.ejb3.internal.MobDeployer;
-import com.netappsid.mob.ejb3.jndi.UserTransactionFactory;
-import com.netappsid.mob.ejb3.jndi.UserTransactionRef;
-import com.netappsid.mob.ejb3.osgi.DeployOSGIEJB3Bundle;
 import com.netappsid.mob.ejb3.osgi.EJB3BundleDeployer;
-import com.netappsid.mob.ejb3.osgi.EJB3ExecutorService;
 import com.netappsid.mob.ejb3.osgi.OSGIServiceLookup;
-import com.netappsid.mob.ejb3.xml.PersistenceUnitUtils;
 
 /**
  * 
@@ -42,14 +26,9 @@ public class MobPlugin implements BundleActivator
 {
 	private static MobPlugin instance;
 
-	private static Logger logger = LoggerFactory.getLogger(MobPlugin.class);
-
 	private Map<String, List<EJB3BundleDeployer>> applicationBundleDeployers = new HashMap<String, List<EJB3BundleDeployer>>();
 	private RemoteServicesRegistry remoteServicesRegistry = new RemoteServicesRegistry();
 
-	/**
-	 * 
-	 */
 	public MobPlugin()
 	{
 		MobPlugin.instance = this;
@@ -78,19 +57,20 @@ public class MobPlugin implements BundleActivator
 	@Override
 	public void start(BundleContext context) throws Exception
 	{
-		if (!"junit".equals(System.getProperty("naid.mode")))
-		{
-			new Thread(new MobDeployer(context, new OSGIServiceLookup(context)), "MobDeployer").start();
-		}
+		final OSGIServiceLookup<UserTransaction> userTransactionService = new OSGIServiceLookup<UserTransaction>(context, UserTransaction.class);
+		final OSGIServiceLookup<Context> contextService = new OSGIServiceLookup<Context>(context, Context.class);
+		final OSGIServiceLookup<PackageAdmin> packageAdminService = new OSGIServiceLookup<PackageAdmin>(context, PackageAdmin.class);
+		final OSGIServiceLookup<IExtensionRegistry> extensionRegistryService = new OSGIServiceLookup<IExtensionRegistry>(context, IExtensionRegistry.class);
+		final OSGIServiceLookup<JPAProviderFactory> jpaProviderFactoryService = new OSGIServiceLookup<JPAProviderFactory>(context, JPAProviderFactory.class);
+		final OSGIServiceLookup<DatasourceProvider> datasourceProviderService = new OSGIServiceLookup<DatasourceProvider>(context, DatasourceProvider.class);
+
+		new Thread(new MobDeployer(context, userTransactionService, contextService, packageAdminService, extensionRegistryService, jpaProviderFactoryService,
+				datasourceProviderService), "MobDeployer").start();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
 	@Override
 	public void stop(BundleContext context) throws Exception
-	{}
+	{
 
+	}
 }

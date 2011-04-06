@@ -36,30 +36,39 @@ public class MobDeployer implements Runnable
 {
 	private final Logger logger = LoggerFactory.getLogger(MobDeployer.class);
 
-	private final OSGIServiceLookup osgiServiceLookup;
 	private final BundleContext context;
+	private final OSGIServiceLookup<UserTransaction> userTransactionService;
+	private final OSGIServiceLookup<Context> contextService;
+	private final OSGIServiceLookup<PackageAdmin> packageAdminService;
+	private final OSGIServiceLookup<IExtensionRegistry> extensionRegistryService;
+	private final OSGIServiceLookup<JPAProviderFactory> jpaProviderFactoryService;
+	private final OSGIServiceLookup<DatasourceProvider> datasourceProviderService;
 
-	public MobDeployer(BundleContext context, OSGIServiceLookup osgiServiceLookup)
+	public MobDeployer(BundleContext context, OSGIServiceLookup<UserTransaction> userTransactionService, OSGIServiceLookup<Context> contextService,
+			OSGIServiceLookup<PackageAdmin> packageAdminService, OSGIServiceLookup<IExtensionRegistry> extensionRegistryService,
+			OSGIServiceLookup<JPAProviderFactory> jpaProviderFactoryService, OSGIServiceLookup<DatasourceProvider> datasourceProviderService)
 	{
 		this.context = context;
-		this.osgiServiceLookup = osgiServiceLookup;
+		this.userTransactionService = userTransactionService;
+		this.contextService = contextService;
+		this.packageAdminService = packageAdminService;
+		this.extensionRegistryService = extensionRegistryService;
+		this.jpaProviderFactoryService = jpaProviderFactoryService;
+		this.datasourceProviderService = datasourceProviderService;
 	}
 
 	@Override
 	public void run()
 	{
-
-		UserTransaction userTransaction = osgiServiceLookup.getService(UserTransaction.class);
-		Context jndiContext = osgiServiceLookup.getService(Context.class);
+		UserTransaction userTransaction = userTransactionService.getService();
+		Context jndiContext = contextService.getService();
 		bindUserTransaction(jndiContext, userTransaction);
-		PackageAdmin packageAdmin = osgiServiceLookup.getService(PackageAdmin.class);
+		PackageAdmin packageAdmin = packageAdminService.getService();
 
-		PersistenceUnitUtils persistenceUnitUtils = new PersistenceUnitUtils(context, osgiServiceLookup.getService(IExtensionRegistry.class),
-				TransformerFactory.newInstance());
+		PersistenceUnitUtils persistenceUnitUtils = new PersistenceUnitUtils(context, extensionRegistryService.getService(), TransformerFactory.newInstance());
 
 		DeployOSGIEJB3Bundle deployOSGIEJB3Bundle = new DeployOSGIEJB3Bundle(new EJB3ExecutorService(), userTransaction, jndiContext,
-				osgiServiceLookup.getService(JPAProviderFactory.class), osgiServiceLookup.getService(DatasourceProvider.class), persistenceUnitUtils,
-				packageAdmin);
+				jpaProviderFactoryService.getService(), datasourceProviderService.getService(), persistenceUnitUtils, packageAdmin);
 
 		ArrayListMultimap<String, EJB3BundleDeployer> applicationBundleDeployers = getApplicationBundleDeployers(packageAdmin);
 
@@ -135,7 +144,7 @@ public class MobDeployer implements Runnable
 
 	private IConfigurationElement[] getEJB3DeployerConfigurationElements()
 	{
-		return osgiServiceLookup.getService(IExtensionRegistry.class).getConfigurationElementsFor("com.netappsid.mob.ejb3.deployer");
+		return extensionRegistryService.getService().getConfigurationElementsFor("com.netappsid.mob.ejb3.deployer");
 	}
 
 }

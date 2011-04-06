@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
@@ -16,6 +17,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 
 import org.eclipse.core.runtime.CoreException;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -198,14 +200,14 @@ public class EJB3Deployer
 		}
 	}
 
-	private void deployServices(EJB3BundleUnit bundleUnit, Context bundleContext) throws NamingException
+	private void deployServices(EJB3BundleUnit bundleUnit, Context jndiBundleContext) throws NamingException
 	{
 		if (!ejb3Service.isEmpty())
 		{
 			for (Map.Entry<Class<?>, URL> serviceEntry : ejb3Service.entrySet())
 			{
 				final String serviceContextKey = baseName + ":" + serviceEntry.getKey().getSimpleName();
-				final Context serviceContext = bundleContext.createSubcontext(serviceEntry.getKey().getSimpleName());
+				final Context serviceContext = jndiBundleContext.createSubcontext(serviceEntry.getKey().getSimpleName());
 				EJb3Service ejb3Service = null;
 
 				if (bindedEjb3Services.containsKey(serviceContextKey))
@@ -219,16 +221,18 @@ public class EJB3Deployer
 					bindedEjb3Services.put(serviceContextKey, ejb3Service);
 				}
 
+				BundleContext osgiBundleContext = packageAdmin.getBundle(ejb3Service.getBeanClass()).getBundleContext();
+
 				if (DeployOSGIEJB3Bundle.isLocalService(serviceEntry.getKey()))
 				{
 					serviceContext.rebind("local", ejb3Service);
+					osgiBundleContext.registerService(ejb3Service.getLocalInterface().getName(), ejb3Service.getProxy(), new Properties());
 				}
 
 				if (DeployOSGIEJB3Bundle.isRemoteService(serviceEntry.getKey()))
 				{
 					serviceContext.rebind("remote", ejb3Service);
-					MobPlugin.getRemoteServicesRegistry().registerService(baseName, serviceEntry.getKey().getSimpleName(),
-							DeployOSGIEJB3Bundle.getRemoteServiceInterface(serviceEntry.getKey()));
+					osgiBundleContext.registerService(ejb3Service.getRemoteInterface().getName(), ejb3Service.getProxy(), new Properties());
 				}
 
 				bundleUnit.addService(ejb3Service);

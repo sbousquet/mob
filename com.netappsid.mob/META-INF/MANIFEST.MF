@@ -2,22 +2,22 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Modular OSGI Box
 Bundle-SymbolicName: com.netappsid.mob;singleton:=true
-Bundle-Version: 0.5.5
+Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: 
- com.netappsid.mob.ejb3;version="0.5.5",
- com.netappsid.mob.ejb3.internal;version="0.5.5";x-internal:=true,
- com.netappsid.mob.ejb3.internal.classloader;version="0.5.5";x-internal:=true,
- com.netappsid.mob.ejb3.internal.interceptors;version="0.5.5";x-internal:=true,
- com.netappsid.mob.ejb3.io;version="0.5.5",
- com.netappsid.mob.ejb3.jndi;version="0.5.5",
- com.netappsid.mob.ejb3.osgi;version="0.5.5",
- com.netappsid.mob.ejb3.remote;version="0.5.5",
- com.netappsid.mob.ejb3.security;version="0.5.5",
- com.netappsid.mob.ejb3.test;version="0.5.5",
- com.netappsid.mob.ejb3.test.beans;version="0.5.5",
- com.netappsid.mob.ejb3.tools;version="0.5.5",
- com.netappsid.mob.ejb3.xml;version="0.5.5"
+ com.netappsid.mob.ejb3;version="1.0.0",
+ com.netappsid.mob.ejb3.internal;version="1.0.0";x-internal:=true,
+ com.netappsid.mob.ejb3.internal.classloader;version="1.0.0";x-internal:=true,
+ com.netappsid.mob.ejb3.internal.interceptors;version="1.0.0";x-internal:=true,
+ com.netappsid.mob.ejb3.io;version="1.0.0",
+ com.netappsid.mob.ejb3.jndi;version="1.0.0",
+ com.netappsid.mob.ejb3.osgi;version="1.0.0",
+ com.netappsid.mob.ejb3.remote;version="1.0.0",
+ com.netappsid.mob.ejb3.security;version="1.0.0",
+ com.netappsid.mob.ejb3.test;version="1.0.0",
+ com.netappsid.mob.ejb3.test.beans;version="1.0.0",
+ com.netappsid.mob.ejb3.tools;version="1.0.0",
+ com.netappsid.mob.ejb3.xml;version="1.0.0"
 Bundle-Vendor: NetAppsID inc.
 Require-Bundle: org.objectweb.asm;bundle-version="3.1.0",
  com.netappsid.javassist;bundle-version="3.9.0";visibility:=reexport,

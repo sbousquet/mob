@@ -1,52 +1,40 @@
-/**
- * 
- */
 package com.netappsid.mob.ejb3.internal;
 
-import javax.naming.NamingException;
+import static org.mockito.Mockito.*;
+
+import java.lang.reflect.Method;
+
 import javax.transaction.Status;
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.netappsid.mob.ejb3.EJBServiceLink;
-import com.netappsid.mob.ejb3.internal.EJB3BundleUnit;
-import com.netappsid.mob.ejb3.internal.InvocationHandler;
-import com.netappsid.mob.ejb3.internal.FakeRemoteEJBServiceLink;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-/**
- * @author xjodoin
- * @author NetAppsID inc.
- * 
- * @version
- * 
- */
 public class InvocationHandlerTest
 {
-
-
 	@Test
 	public void testRollbackWhenExceptionThrow() throws Exception
 	{
+		final UserTransaction userTransaction = mock(UserTransaction.class);
+		when(userTransaction.getStatus()).thenReturn(Status.STATUS_NO_TRANSACTION);
 
-		TestServiceBean testServiceBean = new TestServiceBean();
+		final EJBServiceLink ejbServiceLink = mock(EJBServiceLink.class);
+		final EJB3BundleUnit ejb3BundleUnit = mock(EJB3BundleUnit.class);
+		final TestServiceBean serviceBean = new TestServiceBean();
+		final Method invokedMethod = TestServiceBean.class.getMethod("testMethodThrowException");
 
-		UserTransaction userTransaction = mock(UserTransaction.class);
-		InvocationHandler invocationHandler = new InvocationHandler(mock(EJBServiceLink.class), userTransaction, mock(EJB3BundleUnit.class), testServiceBean, TestServiceBean.class.getMethod("testMethodThrowException"), null);
-		
-		// will throw exception
+		final InvocationHandler invocationHandler = new InvocationHandler(ejbServiceLink, userTransaction, ejb3BundleUnit, serviceBean, invokedMethod, null);
+
 		try
 		{
 			invocationHandler.call();
 		}
 		catch (Exception e)
-		{}
+		{
 
-		verify(userTransaction).setRollbackOnly();
+		}
+
+		verify(userTransaction).rollback();
 	}
 }

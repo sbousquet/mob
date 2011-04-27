@@ -66,6 +66,7 @@ public class OSGIServiceLookup<T> implements ServiceListener
 	{
 		if (event.getServiceReference().isAssignableTo(context.getBundle(), service.getName()))
 		{
+			System.out.println("Event: "+event.getServiceReference() +" "+service.getName());
 			try
 			{
 				serviceReferenceExchanger.exchange(event.getServiceReference());

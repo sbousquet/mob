@@ -1,5 +1,6 @@
 package com.netappsid.mob.ejb3.internal;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -75,6 +76,15 @@ public class MobDeployer implements Runnable
 		for (Entry<String, Collection<EJB3BundleDeployer>> entry : applicationBundleDeployers.asMap().entrySet())
 		{
 			deployOSGIEJB3Bundle.deploy(entry.getKey(), entry.getValue());
+		}
+		
+		try {
+			EARDeployer earDeployer = new EARDeployer(context, packageAdmin);
+			Bundle deploy = earDeployer.deploy(new File("/home/xjodoin/Bureau/bonita.ear"));
+			deployOSGIEJB3Bundle.deploy(deploy,"bonita","");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

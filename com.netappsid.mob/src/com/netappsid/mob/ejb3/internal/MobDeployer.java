@@ -83,7 +83,6 @@ public class MobDeployer implements Runnable
 			Bundle deploy = earDeployer.deploy(new File("/home/xjodoin/Bureau/bonita.ear"));
 			deployOSGIEJB3Bundle.deploy(deploy,"bonita","");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

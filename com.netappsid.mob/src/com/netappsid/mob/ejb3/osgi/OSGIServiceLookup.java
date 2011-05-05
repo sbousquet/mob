@@ -23,7 +23,7 @@ public class OSGIServiceLookup<T> implements ServiceListener
 		this.service = service;
 		this.serviceReferenceExchanger = new Exchanger<ServiceReference>();
 	}
-	
+
 	OSGIServiceLookup(BundleContext context, Class<? extends T> service, Exchanger<ServiceReference> serviceReferenceExchanger)
 	{
 		this.context = context;
@@ -54,7 +54,7 @@ public class OSGIServiceLookup<T> implements ServiceListener
 			{
 				logger.error(e.getMessage(), e);
 			}
-			
+
 			context.removeServiceListener(this);
 		}
 
@@ -64,7 +64,7 @@ public class OSGIServiceLookup<T> implements ServiceListener
 	@Override
 	public void serviceChanged(ServiceEvent event)
 	{
-		if (event.getServiceReference().isAssignableTo(context.getBundle(), service.getName()))
+		if (event.getServiceReference().equals(context.getServiceReference(service.getName())))
 		{
 			try
 			{

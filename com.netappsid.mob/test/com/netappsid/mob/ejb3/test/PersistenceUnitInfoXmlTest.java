@@ -1,6 +1,6 @@
 package com.netappsid.mob.ejb3.test;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import javax.naming.Context;

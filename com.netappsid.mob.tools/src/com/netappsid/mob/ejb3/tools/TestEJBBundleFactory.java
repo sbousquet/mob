@@ -1,11 +1,8 @@
 package com.netappsid.mob.ejb3.tools;
 
 import java.beans.IntrospectionException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.osgi.service.packageadmin.PackageAdmin;
 

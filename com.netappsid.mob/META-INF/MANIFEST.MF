@@ -16,7 +16,6 @@ Export-Package:
  com.netappsid.mob.ejb3.security;version="0.5.5",
  com.netappsid.mob.ejb3.test;version="0.5.5",
  com.netappsid.mob.ejb3.test.beans;version="0.5.5",
- com.netappsid.mob.ejb3.tools;version="0.5.5",
  com.netappsid.mob.ejb3.xml;version="0.5.5"
 Bundle-Vendor: NetAppsID inc.
 Require-Bundle: org.objectweb.asm;bundle-version="3.1.0",

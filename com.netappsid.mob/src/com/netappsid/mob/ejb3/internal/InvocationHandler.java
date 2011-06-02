@@ -109,7 +109,6 @@ public class InvocationHandler implements Callable<Object>
 		 * 
 		 * @see javax.interceptor.InvocationContext#getTimer()
 		 */
-		@Override
 		public Object getTimer()
 		{
 			// TODO implements timer

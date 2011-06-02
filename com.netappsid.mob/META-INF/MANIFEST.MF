@@ -21,7 +21,6 @@ Export-Package:
 Bundle-Vendor: NetAppsID inc.
 Require-Bundle: org.objectweb.asm;bundle-version="3.1.0",
  com.netappsid.javassist;bundle-version="3.9.0";visibility:=reexport,
- org.apache.derby.core;bundle-version="10.5.3",
  org.eclipse.equinox.ds;bundle-version="1.0.0",
  com.netappsid.test.tools;bundle-version="1.0.0";resolution:=optional,
  org.mockito.mockito-core-eclipse;bundle-version="1.8.5";resolution:=optional

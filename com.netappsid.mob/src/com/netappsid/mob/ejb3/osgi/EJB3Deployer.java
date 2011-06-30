@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -226,13 +227,13 @@ public class EJB3Deployer
 				if (DeployOSGIEJB3Bundle.isLocalService(serviceEntry.getKey()))
 				{
 					serviceContext.rebind("local", ejb3Service);
-					osgiBundleContext.registerService(ejb3Service.getLocalInterface().getName(), ejb3Service.getProxy(), new Properties());
+					osgiBundleContext.registerService(ejb3Service.getLocalInterface().getName(), ejb3Service.getProxy(), new Hashtable<String, Object>());
 				}
 
 				if (DeployOSGIEJB3Bundle.isRemoteService(serviceEntry.getKey()))
 				{
 					serviceContext.rebind("remote", ejb3Service);
-					osgiBundleContext.registerService(ejb3Service.getRemoteInterface().getName(), ejb3Service.getProxy(), new Properties());
+					osgiBundleContext.registerService(ejb3Service.getRemoteInterface().getName(), ejb3Service.getProxy(), new Hashtable<String, Object>());
 				}
 
 				bundleUnit.addService(ejb3Service);

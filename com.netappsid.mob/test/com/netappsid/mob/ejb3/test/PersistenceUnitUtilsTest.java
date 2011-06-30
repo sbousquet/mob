@@ -1,7 +1,8 @@
 package com.netappsid.mob.ejb3.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -21,6 +22,9 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.spi.RegistryContributor;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 import com.google.common.collect.Multimap;
@@ -98,20 +102,19 @@ public class PersistenceUnitUtilsTest
 				}
 			};
 
-		BundleContext bundleContext = new BundleContextAdapter()
+		BundleContext bundleContext = mock(BundleContext.class);
+		Bundle bundle = mock(Bundle.class);
+		when(bundle.getResource(anyString())).thenAnswer(new Answer<URL>()
 			{
-				public org.osgi.framework.Bundle getBundle(long id)
+
+				@Override
+				public URL answer(InvocationOnMock invocationOnMock) throws Throwable
 				{
-					return new BundleAdapter()
-						{
-							@Override
-							public URL getResource(String name)
-							{
-								return PersistenceUnitUtilsTest.class.getResource(name);
-							}
-						};
-				};
-			};
+					String name = (String) invocationOnMock.getArguments()[0];
+					return PersistenceUnitUtilsTest.class.getResource(name);
+				}
+			});
+		when(bundleContext.getBundle(anyLong())).thenReturn(bundle);
 
 		PersistenceUnitUtils persistenceUnitUtils = new PersistenceUnitUtils(bundleContext, extensionRegistry, TransformerFactory.newInstance());
 		return persistenceUnitUtils;

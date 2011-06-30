@@ -8,7 +8,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
@@ -52,8 +51,8 @@ public class EJB3Deployer
 
 	private PersistenceUnitInfoXml persistenceUnitInfoXml;
 	private ClassLoader classLoader;
-	private Map<Class<?>, URL> ejb3Service = new HashMap<Class<?>, URL>();
-	private List<Class<?>> entityClass = new ArrayList<Class<?>>();
+	private final Map<Class<?>, URL> ejb3Service = new HashMap<Class<?>, URL>();
+	private final List<Class<?>> entityClass = new ArrayList<Class<?>>();
 	private boolean deployed = false;
 
 	private EjbJarXml ejbJarXml;
@@ -165,6 +164,11 @@ public class EJB3Deployer
 
 	private void deployEntities(EJB3BundleUnit bundleUnit) throws CoreException, NamingException, IOException, ClassNotFoundException
 	{
+		if(persistenceUnitInfoXml == null)
+		{
+			throw new IllegalStateException("You cannot have entity without persistence.xml file");
+		}
+		
 		if (entityClass.isEmpty())
 		{
 			return;

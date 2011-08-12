@@ -3,7 +3,9 @@
  */
 package com.netappsid.mob.ejb3.internal;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 
 /**
@@ -19,8 +21,16 @@ public class TestInjectServiceBean
 	@EJB
 	private TestServiceBean testServiceBean;
 
-	public boolean isInject()
+	@Resource
+	private SessionContext context;
+
+	public boolean isInjectEJB()
 	{
 		return testServiceBean != null;
+	}
+
+	public boolean isInjectSessionContext()
+	{
+		return context != null;
 	}
 }

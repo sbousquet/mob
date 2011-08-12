@@ -3,6 +3,9 @@
  */
 package com.netappsid.mob.ejb3.internal;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -10,16 +13,9 @@ import javax.naming.Context;
 import javax.transaction.UserTransaction;
 
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.service.packageadmin.PackageAdmin;
-
-import com.netappsid.mob.ejb3.internal.EJB3BundleUnit;
-import com.netappsid.mob.ejb3.internal.StatelessService;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 /**
  * @author xjodoin
@@ -48,13 +44,28 @@ public class EJB3BundleUnitTest
 	@Test
 	public void testInjectStateless() throws Exception
 	{
-		EJB3BundleUnit ejb3BundleUnit = new EJB3BundleUnit(mock(Context.class), "test");
+		EJB3BundleUnit ejb3BundleUnit = getEjb3BundleUnit();
+		TestInjectServiceBean create = ejb3BundleUnit.create(TestInjectServiceBean.class);
+		assertTrue(create.isInjectEJB());
+	}
+
+	@Test
+	public void testInjectSessionContext() throws Exception
+	{
+		EJB3BundleUnit ejb3BundleUnit = getEjb3BundleUnit();
+		TestInjectServiceBean create = ejb3BundleUnit.create(TestInjectServiceBean.class);
+		assertTrue(create.isInjectSessionContext());
+	}
+
+	private EJB3BundleUnit getEjb3BundleUnit()
+	{
+		EJB3BundleUnit ejb3BundleUnit = new EJB3BundleUnit(mock(Context.class), mock(UserTransaction.class), "test");
 		UserTransaction userTransaction = mock(UserTransaction.class);
 		PackageAdmin packageAdmin = mock(PackageAdmin.class);
-		ejb3BundleUnit.addService(new StatelessService(newSingleThreadExecutor,new FakeRemoteEJBServiceLink(packageAdmin), userTransaction, TestServiceBean.class, ejb3BundleUnit));
-		ejb3BundleUnit.addService(new StatelessService(newSingleThreadExecutor,new FakeRemoteEJBServiceLink(packageAdmin), userTransaction, TestInjectServiceBean.class, ejb3BundleUnit));
-
-		TestInjectServiceBean create = ejb3BundleUnit.create(TestInjectServiceBean.class);
-		assertTrue(create.isInject());
+		ejb3BundleUnit.addService(new StatelessService(newSingleThreadExecutor, new FakeRemoteEJBServiceLink(packageAdmin), userTransaction,
+				TestServiceBean.class, ejb3BundleUnit));
+		ejb3BundleUnit.addService(new StatelessService(newSingleThreadExecutor, new FakeRemoteEJBServiceLink(packageAdmin), userTransaction,
+				TestInjectServiceBean.class, ejb3BundleUnit));
+		return ejb3BundleUnit;
 	}
 }

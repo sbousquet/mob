@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.EJBContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -21,11 +22,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
+import javax.transaction.UserTransaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.netappsid.mob.ejb3.MobPlugin;
+import com.netappsid.mob.ejb3.internal.context.BeanSessionContext;
 import com.netappsid.mob.ejb3.internal.interceptors.InterceptorHandler;
 import com.netappsid.mob.ejb3.internal.interceptors.Interceptors;
 
@@ -41,12 +43,12 @@ public class EJB3BundleUnit
 
 	private String name;
 
-	private Map<Class, EJb3Service> localService = new HashMap<Class, EJb3Service>();
-	private Map<Class, EJb3Service> remoteService = new HashMap<Class, EJb3Service>();
-	private Map<Class, EJb3Service> beanService = new HashMap<Class, EJb3Service>();
+	private final Map<Class, EJb3Service> localService = new HashMap<Class, EJb3Service>();
+	private final Map<Class, EJb3Service> remoteService = new HashMap<Class, EJb3Service>();
+	private final Map<Class, EJb3Service> beanService = new HashMap<Class, EJb3Service>();
 
 	private EntityManagerFactory managerFactory;
-	private StatelessPool statelessPool = new StatelessPool(this);
+	private final StatelessPool statelessPool = new StatelessPool(this);
 
 	private Interceptors interceptors;
 
@@ -60,10 +62,12 @@ public class EJB3BundleUnit
 		};
 
 	private final Context context;
+	private final UserTransaction userTransaction;
 
-	public EJB3BundleUnit(Context context,String name)
+	public EJB3BundleUnit(Context context, UserTransaction userTransaction, String name)
 	{
 		this.context = context;
+		this.userTransaction = userTransaction;
 		this.name = name;
 	}
 
@@ -202,7 +206,16 @@ public class EJB3BundleUnit
 			{
 				try
 				{
-					toInject = new InitialContext().lookup(field.getAnnotation(Resource.class).mappedName());
+					String mappedName = field.getAnnotation(Resource.class).mappedName();
+					if (!mappedName.equals(""))
+					{
+						toInject = new InitialContext().lookup(mappedName);
+					}
+					else
+					{
+						toInject = lookupRessourceByType(field.getType());
+					}
+
 				}
 				catch (NamingException e)
 				{
@@ -224,6 +237,16 @@ public class EJB3BundleUnit
 			}
 
 		}
+	}
+
+	private Object lookupRessourceByType(Class<?> type)
+	{
+		if (EJBContext.class.isAssignableFrom(type))
+		{
+			BeanSessionContext beanSessionContext = new BeanSessionContext(userTransaction);
+			return beanSessionContext;
+		}
+		return null;
 	}
 
 	/**

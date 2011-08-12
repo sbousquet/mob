@@ -123,7 +123,7 @@ public class EJB3Deployer
 	{
 		try
 		{
-			final EJB3BundleUnit bundleUnit = new EJB3BundleUnit(context, baseName);
+			final EJB3BundleUnit bundleUnit = new EJB3BundleUnit(context, userTransaction, baseName);
 			final Context bundleContext = context.createSubcontext(baseName);
 
 			deployEntities(bundleUnit);
@@ -164,11 +164,11 @@ public class EJB3Deployer
 
 	private void deployEntities(EJB3BundleUnit bundleUnit) throws CoreException, NamingException, IOException, ClassNotFoundException
 	{
-		if(persistenceUnitInfoXml == null)
+		if (persistenceUnitInfoXml == null)
 		{
 			throw new IllegalStateException("You cannot have entity without persistence.xml file");
 		}
-		
+
 		if (entityClass.isEmpty())
 		{
 			return;

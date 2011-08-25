@@ -1,29 +1,15 @@
 Manifest-Version: 1.0
+Export-Package: com.netappsid.mob.jndi;uses:="javax.naming";version="6
+ .0.20.SNAPSHOT"
+Built-By: xjodoin
+Build-Jdk: 1.7.0
+Bundle-Version: 6.0.20.SNAPSHOT
+Tool: Bnd-1.43.0
+Bundle-Name: com.netappsid.mob.jndi
+Bnd-LastModified: 1314213876063
+Created-By: Apache Maven Bundle Plugin
 Bundle-ManifestVersion: 2
-Bundle-Name: Apache Tomcat Naming
-Bundle-SymbolicName: com.netappsid.mob.jndi;singleton:=true
-Bundle-Version: 6.0.20
-Bundle-Vendor: NETAPPSID
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: javax.wsdl,
- javax.wsdl.extensions,
- javax.wsdl.extensions.soap,
- javax.wsdl.factory,
- javax.wsdl.xml,
- javax.xml.rpc,
- javax.xml.rpc.handler,
- org.apache.log4j,
- org.osgi.framework,
- org.osgi.service.packageadmin
-Export-Package: org.apache.catalina.util,
- org.apache.naming,
- org.apache.naming.factory,
- org.apache.naming.factory.webservices,
- org.apache.naming.java,
- org.apache.naming.resources,
- org.apache.naming.resources.jndi,
- org.apache.tomcat.util.http
-Bundle-Activator: org.apache.naming.NamingPlugin
-Service-Component: OSGI-INF/jndiservice.xml
-Bundle-ActivationPolicy: lazy
+Bundle-SymbolicName: com.netappsid.mob.jndi
+Import-Package: .,javax.management,javax.naming,javax.naming.directory
+ ,javax.naming.spi,javax.xml.namespace
 

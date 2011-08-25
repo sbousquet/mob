@@ -8,6 +8,6 @@ public class SecondTestBean implements SecondTestLocal
 	@Override
 	public void test()
 	{
-		System.out.println("héhé");
+		System.out.println("hehe");
 	}
 }

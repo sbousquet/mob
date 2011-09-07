@@ -13,6 +13,8 @@ import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
+import javax.persistence.SharedCacheMode;
+import javax.persistence.ValidationMode;
 import javax.persistence.spi.ClassTransformer;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.PersistenceUnitTransactionType;
@@ -22,12 +24,10 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.eclipse.core.runtime.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Multimap;
-import com.netappsid.mob.ejb3.MobPlugin;
 
 /**
  * @author xjodoin
@@ -106,7 +106,7 @@ public class PersistenceUnitInfoXml implements PersistenceUnitInfo
 		Iterator<Element> iterator = element.elementIterator();
 		while (iterator.hasNext())
 		{
-			Element element2 = (Element) iterator.next();
+			Element element2 = iterator.next();
 			properties.put(element2.attributeValue("name"), element2.attributeValue("value"));
 		}
 	}
@@ -329,6 +329,24 @@ public class PersistenceUnitInfoXml implements PersistenceUnitInfo
 	public void setPersistenceProviderClassName(String persistenceProviderClassName)
 	{
 		this.persistenceProviderClassName = persistenceProviderClassName;
+	}
+
+	@Override
+	public String getPersistenceXMLSchemaVersion()
+	{
+		return null;
+	}
+
+	@Override
+	public SharedCacheMode getSharedCacheMode()
+	{
+		return null;
+	}
+
+	@Override
+	public ValidationMode getValidationMode()
+	{
+		return null;
 	}
 
 }

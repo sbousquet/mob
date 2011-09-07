@@ -83,9 +83,9 @@
 			<version>3.3.1</version>
 		</dependency>
 		<dependency>
-			<groupId>javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>3.12.1.GA</version>
+			<groupId>org.jboss.javassist</groupId>
+			<artifactId>com.springsource.javassist</artifactId>
+			<version>3.10.0.GA</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -108,18 +108,18 @@
 			<version>3.6.0.v20100505</version>
 		</dependency>
 		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>r09</version>
+			<groupId>com.googlecode.guava-osgi</groupId>
+			<artifactId>guava-osgi</artifactId>
+			<version>9.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.glassfish</groupId>
+			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>javax.persistence</artifactId>
-			<version>10.0-b28</version>
+			<version>2.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>dom4j</groupId>
-			<artifactId>dom4j</artifactId>
+			<groupId>org.dom4j</groupId>
+			<artifactId>com.springsource.org.dom4j</artifactId>
 			<version>1.6.1</version>
 		</dependency>
 	</dependencies>

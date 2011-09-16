@@ -178,36 +178,23 @@ public class DeployOSGIEJB3Bundle
 			{
 				URL url = enumeration.nextElement();
 
-				String name = url.getPath().replace('/', '.');
-
-				if (name.startsWith(".bin."))
-				{
-					name = name.substring(".bin.".length());
-				}
-				else if (name.startsWith("."))
-				{
-					name = name.substring(".".length());
-				}
-
-				if (name.endsWith(".class"))
-				{
-					name = name.substring(0, name.length() - ".class".length());
-				}
-
+				EJb3AnnotationVisitor ejb3Class = generateClassInfo(url);
+				String className = ejb3Class.getClassName();
+				
 				// skip class with a package restriction
 				if (bundleDeployer.getPackageRestriction() != null && !bundleDeployer.getPackageRestriction().equals(""))
 				{
-					if (!name.startsWith(bundleDeployer.getPackageRestriction()))
+					if (!className.startsWith(bundleDeployer.getPackageRestriction()))
 					{
 						continue;
 					}
 				}
-
-				if (isEJB3Class(url))
+				
+				if (ejb3Class.isEjbClass())
 				{
 					try
 					{
-						Class<?> clazz = bundleDeployer.getBundle().loadClass(name);
+						Class<?> clazz = bundleDeployer.getBundle().loadClass(className);
 
 						if (isEJB3Entity(clazz))
 						{
@@ -243,7 +230,10 @@ public class DeployOSGIEJB3Bundle
 			}
 		}
 
-		deployer.setClassLoader(new MultiBundleClassLoader(bundles));
+		
+		MultiBundleClassLoader classLoader = new MultiBundleClassLoader(packageAdmin,bundles);
+		
+		deployer.setClassLoader(classLoader);
 
 		deployer.deploy();
 	}
@@ -252,7 +242,7 @@ public class DeployOSGIEJB3Bundle
 	 * @param url
 	 * @return
 	 */
-	private static boolean isEJB3Class(URL url)
+	private static EJb3AnnotationVisitor generateClassInfo(URL url)
 	{
 		InputStream openStream = null;
 		try
@@ -264,7 +254,7 @@ public class DeployOSGIEJB3Bundle
 			EJb3AnnotationVisitor eJb3AnnotationVisitor = new EJb3AnnotationVisitor();
 			classReader.accept(eJb3AnnotationVisitor, ClassReader.SKIP_CODE);
 
-			return eJb3AnnotationVisitor.isEjbClass();
+			return eJb3AnnotationVisitor;
 		}
 		catch (IOException e)
 		{
@@ -285,7 +275,7 @@ public class DeployOSGIEJB3Bundle
 			}
 		}
 
-		return false;
+		return null;
 	}
 
 	public static boolean isEJB3Service(Class<?> class1)

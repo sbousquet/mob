@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.osgi.framework.Bundle;
+import org.osgi.service.packageadmin.ExportedPackage;
+import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
  * @author xjodoin
@@ -18,9 +20,11 @@ import org.osgi.framework.Bundle;
 public class MultiBundleClassLoader extends ClassLoader
 {
 	private Collection<Bundle> bundles;
+	private final PackageAdmin packageAdmin;
 
-	public MultiBundleClassLoader(Collection<Bundle> bundles)
+	public MultiBundleClassLoader(PackageAdmin packageAdmin, Collection<Bundle> bundles)
 	{
+		this.packageAdmin = packageAdmin;
 		this.bundles = bundles;
 	}
 
@@ -37,6 +41,13 @@ public class MultiBundleClassLoader extends ClassLoader
 	@Override
 	public Class<?> loadClass(String name) throws ClassNotFoundException
 	{
+		try
+		{
+			return MultiBundleClassLoader.class.getClassLoader().loadClass(name);
+		} catch (ClassNotFoundException e1)
+		{
+		}
+
 		Iterator<Bundle> iterator = bundles.iterator();
 		Class<?> found = null;
 		while (iterator.hasNext())
@@ -46,26 +57,25 @@ public class MultiBundleClassLoader extends ClassLoader
 			try
 			{
 				found = bundle.loadClass(name);
-			}
-			catch (Exception e)
+			} catch (Exception e)
 			{
-				//do nothing we must pass every bundle
+				// do nothing we must pass every bundle
 			}
 
 			if (found != null)
 			{
-				break;
+				return found;
 			}
 		}
-		
-		if(found!=null)
+
+		ExportedPackage exportedPackage = packageAdmin.getExportedPackage(name.substring(0, name.lastIndexOf('.')));
+
+		if (exportedPackage != null)
 		{
-			return found;
+			return exportedPackage.getExportingBundle().loadClass(name);
 		}
-		else
-		{
-			throw new ClassNotFoundException(name);
-		}
+
+		throw new ClassNotFoundException(name);
 	}
 
 }

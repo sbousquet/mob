@@ -123,7 +123,7 @@ public class EJB3Deployer
 	{
 		try
 		{
-			final EJB3BundleUnit bundleUnit = new EJB3BundleUnit(context, userTransaction, baseName);
+			final EJB3BundleUnit bundleUnit = new EJB3BundleUnit(classLoader, context, userTransaction, baseName);
 			final Context bundleContext = context.createSubcontext(baseName);
 
 			deployEntities(bundleUnit);

@@ -59,7 +59,7 @@ public class EJB3BundleUnitTest
 
 	private EJB3BundleUnit getEjb3BundleUnit()
 	{
-		EJB3BundleUnit ejb3BundleUnit = new EJB3BundleUnit(mock(Context.class), mock(UserTransaction.class), "test");
+		EJB3BundleUnit ejb3BundleUnit = new EJB3BundleUnit(Thread.currentThread().getContextClassLoader(),mock(Context.class), mock(UserTransaction.class), "test");
 		UserTransaction userTransaction = mock(UserTransaction.class);
 		PackageAdmin packageAdmin = mock(PackageAdmin.class);
 		ejb3BundleUnit.addService(new StatelessService(newSingleThreadExecutor, new FakeRemoteEJBServiceLink(packageAdmin), userTransaction,

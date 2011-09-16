@@ -10,12 +10,11 @@
 	<parent>
 		<groupId>mob</groupId>
 		<artifactId>mob</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>com.netappsid.mob</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
 
 	<name>${bundle.symbolicName}</name>
 
@@ -24,6 +23,18 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
+		<resources>
+			<resource>
+				<targetPath>schema</targetPath>
+				<directory>schema</directory>
+			</resource>
+			<resource>
+				<directory>.</directory>
+				<includes>
+					<include>plugin.xml</include>
+				</includes>
+			</resource>
+		</resources>
 		<testSourceDirectory>test</testSourceDirectory>
 		<testResources>
 			<testResource>
@@ -57,8 +68,9 @@
 				<configuration>
 					<manifestLocation>META-INF</manifestLocation>
 					<instructions>
-						<Export-Package>com.netappsid.mob</Export-Package>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Export-Package>com.netappsid.mob.*</Export-Package>
+						<Bundle-SymbolicName>${project.artifactId};singleton:=true</Bundle-SymbolicName>
+						<Bundle-Activator>com.netappsid.mob.ejb3.MobPlugin</Bundle-Activator>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -96,6 +108,12 @@
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.ejb</artifactId>
 			<version>3.1.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.glassfish</groupId>
+					<artifactId>javax.annotation</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.osgi</groupId>
@@ -106,6 +124,16 @@
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>org.eclipse.core.runtime</artifactId>
 			<version>3.6.0.v20100505</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.equinox</groupId>
+			<artifactId>org.eclipse.equinox.ds</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.equinox</groupId>
+			<artifactId>org.eclipse.equinox.util</artifactId>
+			<version>1.0.200</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.guava-osgi</groupId>

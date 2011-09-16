@@ -10,12 +10,11 @@
 	<parent>
 		<groupId>mob</groupId>
 		<artifactId>mob</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>com.netappsid.mob.atomikos</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
 
 	<name>${bundle.symbolicName}</name>
 
@@ -24,6 +23,12 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
+		<resources>
+			<resource>
+				<targetPath>OSGI-INF</targetPath>
+				<directory>OSGI-INF</directory>
+			</resource>
+		</resources>
 
 		<plugins>
 			<plugin>
@@ -36,6 +41,23 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<manifestLocation>META-INF</manifestLocation>
+					<instructions>
+						<Export-Package>com.atomikos.*</Export-Package>
+						<Bundle-SymbolicName>${project.artifactId};singleton:=true</Bundle-SymbolicName>
+						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+						<DynamicImport-Package>*</DynamicImport-Package>
+						<Service-Component>OSGI-INF/usertransactionservice.xml, OSGI-INF/mobdatasource.xml</Service-Component>
+						<Embed-Dependency>groupId=com.atomikos;scope=runtime;inline=true</Embed-Dependency>
+						<Embed-Transitive>true</Embed-Transitive>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
 				<version>2.3.2</version>
@@ -43,19 +65,6 @@
 					<threshold>High</threshold>
 					<effort>Default</effort>
 					<xmlOutput>true</xmlOutput>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<manifestLocation>META-INF</manifestLocation>
-					<instructions>
-						<Export-Package>com.atomikos</Export-Package>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Embed-Dependency>*;groupId=com.atomikos;inline=true</Embed-Dependency>
-					</instructions>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -66,17 +75,26 @@
 			<groupId>mob</groupId>
 			<artifactId>com.netappsid.mob</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
-			<type>bundle</type>
-		</dependency>
-		<dependency>
-			<groupId>com.atomikos</groupId>
-			<artifactId>transactions</artifactId>
-			<version>3.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.atomikos</groupId>
 			<artifactId>transactions-jdbc</artifactId>
 			<version>3.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.atomikos</groupId>
+			<artifactId>transactions-hibernate3</artifactId>
+			<version>3.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.jms</groupId>
+			<artifactId>com.springsource.javax.jms</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.resource</groupId>
+			<artifactId>com.springsource.javax.resource</artifactId>
+			<version>1.5.0</version>
 		</dependency>
 	</dependencies>
 </project>

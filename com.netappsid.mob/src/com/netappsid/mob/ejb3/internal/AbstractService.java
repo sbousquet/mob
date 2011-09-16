@@ -48,7 +48,14 @@ public abstract class AbstractService extends RefAddr implements EJb3Service, Re
 	protected Class<?> modifyClass(Class<?> original) throws Exception
 	{
 
-		ProxyFactory f = new ProxyFactory();
+		ProxyFactory f = new ProxyFactory()
+		{
+			@Override
+			protected ClassLoader getClassLoader()
+			{
+				return bundleUnit.getClassLoader();
+			}
+		};
 
 		f.setSuperclass(original);
 		f.setInterfaces(new Class[] { EJB3ServiceHandler.class });

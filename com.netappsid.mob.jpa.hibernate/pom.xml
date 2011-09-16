@@ -10,12 +10,11 @@
 	<parent>
 		<groupId>mob</groupId>
 		<artifactId>mob</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>com.netappsid.mob.jpa.hibernate</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
 
 	<name>${bundle.symbolicName}</name>
 
@@ -24,6 +23,22 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
+		<resources>
+			<resource>
+				<targetPath>OSGI-INF</targetPath>
+				<directory>OSGI-INF</directory>
+			</resource>
+			<resource>
+				<targetPath>schema</targetPath>
+				<directory>schema</directory>
+			</resource>
+			<resource>
+				<directory>.</directory>
+				<includes>
+					<include>plugin.xml</include>
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -52,7 +67,9 @@
 					<manifestLocation>META-INF</manifestLocation>
 					<instructions>
 						<Export-Package>com.netappsid.mob.jndi</Export-Package>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-SymbolicName>${project.artifactId};singleton:=true</Bundle-SymbolicName>
+						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+						<Service-Component>OSGI-INF/hibernatejpaproviderfactory.xml</Service-Component>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -74,6 +91,12 @@
 			<groupId>com.netappsid.org.hibernate</groupId>
 			<artifactId>org.hibernate</artifactId>
 			<version>3.3.2-GA</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.netappsid.org.hibernate</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 

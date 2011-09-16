@@ -63,9 +63,11 @@ public class EJB3BundleUnit
 
 	private final Context context;
 	private final UserTransaction userTransaction;
+	private final ClassLoader classLoader;
 
-	public EJB3BundleUnit(Context context, UserTransaction userTransaction, String name)
+	public EJB3BundleUnit(ClassLoader classLoader, Context context, UserTransaction userTransaction, String name)
 	{
+		this.classLoader = classLoader;
 		this.context = context;
 		this.userTransaction = userTransaction;
 		this.name = name;
@@ -376,6 +378,11 @@ public class EJB3BundleUnit
 			names.add(clazz.getSimpleName());
 		}
 		return names;
+	}
+	
+	public ClassLoader getClassLoader()
+	{
+		return classLoader;
 	}
 
 	public List<InterceptorHandler> getInterceptors(String serviceName)

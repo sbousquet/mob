@@ -23,7 +23,14 @@ public class EJb3AnnotationVisitor extends EmptyVisitor
 	private static Set<String> ejb3Type = new HashSet<String>(Arrays.asList("Ljavax/ejb/Stateless;", "Ljavax/ejb/Statefull;", "Ljavax/persistence/Entity;"));
 
 	private boolean isEjbClass = false;
+
+	private String className;
 	
+	@Override
+	public void visit(int version, int access, String name, String signature, String superName, String[] interfaces)
+	{
+		this.className = name.replace('/', '.');
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -46,5 +53,10 @@ public class EJb3AnnotationVisitor extends EmptyVisitor
 	public boolean isEjbClass()
 	{
 		return isEjbClass;
+	}
+
+	public String getClassName()
+	{
+		return className;
 	}
 }

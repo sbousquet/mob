@@ -60,8 +60,8 @@ public class DeployOSGIEJB3Bundle
 	/**
 	 * 
 	 */
-	public DeployOSGIEJB3Bundle(EJB3ExecutorService ejb3ExecutorService, UserTransaction userTransaction, Context context,
-			JPAProviderFactory jpaProviderFactory, DatasourceProvider dataSourceProvider, PersistenceUnitUtils persistenceUnitUtils, PackageAdmin packageAdmin)
+	public DeployOSGIEJB3Bundle(EJB3ExecutorService ejb3ExecutorService, UserTransaction userTransaction, Context context, JPAProviderFactory jpaProviderFactory,
+			DatasourceProvider dataSourceProvider, PersistenceUnitUtils persistenceUnitUtils, PackageAdmin packageAdmin)
 	{
 		this.executorService = ejb3ExecutorService;
 		this.userTransaction = userTransaction;
@@ -96,18 +96,25 @@ public class DeployOSGIEJB3Bundle
 
 			// find datasource
 			Enumeration<URL> datasources = bundleDeployer.getBundle().findEntries("/", "*-ds.xml", true);
+			Set<String> deployed = new HashSet<String>();
+
 			if (datasources != null)
 			{
 				while (datasources.hasMoreElements())
 				{
 					URL url = datasources.nextElement();
-					try
+					String path = url.getPath();
+					String name = path.substring(path.lastIndexOf('/'));
+
+					if (deployed.add(name))
 					{
-						dataSourceHelper.parseXmlDataSourceAndBindIt(new SAXReader().read(url.openStream()), context);
-					}
-					catch (Exception e)
-					{
-						logger.error(e.getMessage(), e);
+						try
+						{
+							dataSourceHelper.parseXmlDataSourceAndBindIt(new SAXReader().read(url.openStream()), context);
+						} catch (Exception e)
+						{
+							logger.error(e.getMessage(), e);
+						}
 					}
 
 				}
@@ -127,12 +134,10 @@ public class DeployOSGIEJB3Bundle
 						try
 						{
 							persistenceUnitInfoXml.fromInputStream(url.openStream());
-						}
-						catch (DocumentException e)
+						} catch (DocumentException e)
 						{
 							logger.error(e.getMessage(), e);
-						}
-						catch (IOException e)
+						} catch (IOException e)
 						{
 							logger.error(e.getMessage(), e);
 						}
@@ -156,12 +161,10 @@ public class DeployOSGIEJB3Bundle
 					try
 					{
 						ejbJarXml.fromInputStream(url.openStream());
-					}
-					catch (DocumentException e)
+					} catch (DocumentException e)
 					{
 						logger.error(e.getMessage(), e);
-					}
-					catch (IOException e)
+					} catch (IOException e)
 					{
 						logger.error(e.getMessage(), e);
 					}
@@ -180,7 +183,7 @@ public class DeployOSGIEJB3Bundle
 
 				EJb3AnnotationVisitor ejb3Class = generateClassInfo(url);
 				String className = ejb3Class.getClassName();
-				
+
 				// skip class with a package restriction
 				if (bundleDeployer.getPackageRestriction() != null && !bundleDeployer.getPackageRestriction().equals(""))
 				{
@@ -189,7 +192,7 @@ public class DeployOSGIEJB3Bundle
 						continue;
 					}
 				}
-				
+
 				if (ejb3Class.isEjbClass())
 				{
 					try
@@ -199,13 +202,11 @@ public class DeployOSGIEJB3Bundle
 						if (isEJB3Entity(clazz))
 						{
 							deployer.addEntity(clazz);
-						}
-						else if (isEJB3Service(clazz))
+						} else if (isEJB3Service(clazz))
 						{
 							deployer.addService(clazz, url);
 						}
-					}
-					catch (Exception e)
+					} catch (Exception e)
 					{
 						logger.error(e.getMessage(), e);
 					}
@@ -219,8 +220,7 @@ public class DeployOSGIEJB3Bundle
 						if (isEJB3Entity(clazz))
 						{
 							deployer.addEntity(clazz);
-						}
-						else if (isEJB3Service(clazz))
+						} else if (isEJB3Service(clazz))
 						{
 							deployer.addService(clazz, null);
 						}
@@ -230,9 +230,8 @@ public class DeployOSGIEJB3Bundle
 			}
 		}
 
-		
-		MultiBundleClassLoader classLoader = new MultiBundleClassLoader(packageAdmin,bundles);
-		
+		MultiBundleClassLoader classLoader = new MultiBundleClassLoader(packageAdmin, bundles);
+
 		deployer.setClassLoader(classLoader);
 
 		deployer.deploy();
@@ -255,20 +254,17 @@ public class DeployOSGIEJB3Bundle
 			classReader.accept(eJb3AnnotationVisitor, ClassReader.SKIP_CODE);
 
 			return eJb3AnnotationVisitor;
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			logger.error(e.getMessage(), e);
-		}
-		finally
+		} finally
 		{
 			if (openStream != null)
 			{
 				try
 				{
 					openStream.close();
-				}
-				catch (IOException e)
+				} catch (IOException e)
 				{
 					logger.error(e.getMessage(), e);
 				}
@@ -303,8 +299,7 @@ public class DeployOSGIEJB3Bundle
 		if (serviceClass.isAnnotationPresent(Local.class))
 		{
 			return ((Local) serviceClass.getAnnotation(Local.class)).value()[0];
-		}
-		else
+		} else
 		{
 			for (Class type : serviceClass.getInterfaces())
 			{
@@ -323,8 +318,7 @@ public class DeployOSGIEJB3Bundle
 		if (serviceClass.isAnnotationPresent(Remote.class))
 		{
 			return ((Remote) serviceClass.getAnnotation(Remote.class)).value()[0];
-		}
-		else
+		} else
 		{
 			for (Class type : serviceClass.getInterfaces())
 			{
@@ -343,8 +337,7 @@ public class DeployOSGIEJB3Bundle
 		if (serviceClass.isAnnotationPresent(serviceAnnotationClass))
 		{
 			return true;
-		}
-		else
+		} else
 		{
 			for (Class type : serviceClass.getInterfaces())
 			{

@@ -3,6 +3,7 @@
  */
 package com.netappsid.mob.ejb3.internal.classloader;
 
+import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -19,7 +20,7 @@ import org.osgi.service.packageadmin.PackageAdmin;
  */
 public class MultiBundleClassLoader extends ClassLoader
 {
-	private Collection<Bundle> bundles;
+	private final Collection<Bundle> bundles;
 	private final PackageAdmin packageAdmin;
 
 	public MultiBundleClassLoader(PackageAdmin packageAdmin, Collection<Bundle> bundles)
@@ -44,20 +45,21 @@ public class MultiBundleClassLoader extends ClassLoader
 		try
 		{
 			return MultiBundleClassLoader.class.getClassLoader().loadClass(name);
-		} catch (ClassNotFoundException e1)
-		{
 		}
+		catch (ClassNotFoundException e1)
+		{}
 
 		Iterator<Bundle> iterator = bundles.iterator();
 		Class<?> found = null;
 		while (iterator.hasNext())
 		{
-			Bundle bundle = (Bundle) iterator.next();
+			Bundle bundle = iterator.next();
 
 			try
 			{
 				found = bundle.loadClass(name);
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 				// do nothing we must pass every bundle
 			}
@@ -76,6 +78,20 @@ public class MultiBundleClassLoader extends ClassLoader
 		}
 
 		throw new ClassNotFoundException(name);
+	}
+
+	@Override
+	public URL getResource(String name)
+	{
+		for (Bundle bundle : bundles)
+		{
+			if (bundle.getResource(name) != null)
+			{
+				return bundle.getResource(name);
+			}
+		}
+
+		return null;
 	}
 
 }

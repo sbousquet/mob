@@ -6,6 +6,12 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<scm>
+		<connection>scm:git:git@github.com:360-Innovations/mob.git</connection>
+		<url>scm:git:git@github.com:360-Innovations/mob.git</url>
+		<developerConnection>scm:git:ssh://git@github.com/360-Innovations/mob.git</developerConnection>
+	</scm>
+
 	<groupId>com.netappsid</groupId>
 	<artifactId>mob</artifactId>
 	<version>1.0.0-SNAPSHOT</version>

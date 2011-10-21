@@ -1,14 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<properties>
-		<bundle.symbolicName>com.netappsid.mob.jndi</bundle.symbolicName>
-		<bundle.namespace>com.netappsid.mob.jndi</bundle.namespace>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
 	<parent>
-		<groupId>mob</groupId>
+		<groupId>com.netappsid</groupId>
 		<artifactId>mob</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
@@ -16,7 +10,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>com.netappsid.mob.jndi</artifactId>
 
-	<name>${bundle.symbolicName}</name>
 
 	<packaging>bundle</packaging>
 

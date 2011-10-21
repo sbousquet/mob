@@ -1,22 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<properties>
-		<bundle.symbolicName>com.netappsid.mob.jpa.hibernate</bundle.symbolicName>
-		<bundle.namespace>com.netappsid.mob.jpa.hibernate</bundle.namespace>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
 	<parent>
-		<groupId>mob</groupId>
+		<groupId>com.netappsid</groupId>
 		<artifactId>mob</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>com.netappsid.mob.jpa.hibernate</artifactId>
-
-	<name>${bundle.symbolicName}</name>
 
 	<packaging>bundle</packaging>
 
@@ -78,9 +70,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>mob</groupId>
+			<groupId>com.netappsid</groupId>
 			<artifactId>com.netappsid.mob</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.log4j</groupId>

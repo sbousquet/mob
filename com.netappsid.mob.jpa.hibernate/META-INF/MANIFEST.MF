@@ -1,12 +1,18 @@
 Manifest-Version: 1.0
+Service-Component: OSGI-INF/hibernatejpaproviderfactory.xml
+Bundle-ActivationPolicy: lazy
 Built-By: xjodoin
-Build-Jdk: 1.7.0
-Bundle-Version: 1.0.0.SNAPSHOT
 Tool: Bnd-1.43.0
 Bundle-Name: com.netappsid.mob.jpa.hibernate
-Bnd-LastModified: 1314216894314
 Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.7.0_02-ea
+Bundle-Version: 1.0.0.SNAPSHOT
+Bnd-LastModified: 1319205990588
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: com.netappsid.mob.jpa.hibernate
-Import-Package: .
+Import-Package: com.netappsid.mob.ejb3,javax.persistence;version="[2.0
+ ,3)",javax.persistence.spi;version="[2.0,3)",org.apache.log4j;version
+ ="[1.2,2)",org.eclipse.core.runtime;version="[3.4,4)",org.hibernate;v
+ ersion="[3.3,4)",org.hibernate.ejb;version="[3.3,4)",org.hibernate.ev
+ ent;version="[3.3,4)"
+Bundle-SymbolicName: com.netappsid.mob.jpa.hibernate;singleton:=true
 

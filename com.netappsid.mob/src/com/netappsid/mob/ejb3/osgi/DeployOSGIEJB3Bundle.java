@@ -36,6 +36,7 @@ import com.netappsid.mob.ejb3.JPAProviderFactory;
 import com.netappsid.mob.ejb3.internal.EJb3AnnotationVisitor;
 import com.netappsid.mob.ejb3.internal.classloader.MultiBundleClassLoader;
 import com.netappsid.mob.ejb3.xml.EjbJarXml;
+import com.netappsid.mob.ejb3.xml.OrmXML;
 import com.netappsid.mob.ejb3.xml.PersistenceUnitInfoXml;
 import com.netappsid.mob.ejb3.xml.PersistenceUnitUtils;
 
@@ -60,8 +61,8 @@ public class DeployOSGIEJB3Bundle
 	/**
 	 * 
 	 */
-	public DeployOSGIEJB3Bundle(EJB3ExecutorService ejb3ExecutorService, UserTransaction userTransaction, Context context, JPAProviderFactory jpaProviderFactory,
-			DatasourceProvider dataSourceProvider, PersistenceUnitUtils persistenceUnitUtils, PackageAdmin packageAdmin)
+	public DeployOSGIEJB3Bundle(EJB3ExecutorService ejb3ExecutorService, UserTransaction userTransaction, Context context,
+			JPAProviderFactory jpaProviderFactory, DatasourceProvider dataSourceProvider, PersistenceUnitUtils persistenceUnitUtils, PackageAdmin packageAdmin)
 	{
 		this.executorService = ejb3ExecutorService;
 		this.userTransaction = userTransaction;
@@ -90,6 +91,13 @@ public class DeployOSGIEJB3Bundle
 
 		DataSourceHelper dataSourceHelper = new DataSourceHelper(dataSourceProvider);
 
+		final List<Bundle> bundleDeployerBundles = new ArrayList<Bundle>();
+		for (EJB3BundleDeployer bundleDeployer : collection)
+		{
+			bundleDeployerBundles.add(bundleDeployer.getBundle());
+		}
+		MultiBundleClassLoader multiBundleClassLoader = new MultiBundleClassLoader(packageAdmin, bundleDeployerBundles);
+
 		for (EJB3BundleDeployer bundleDeployer : collection)
 		{
 			bundles.add(bundleDeployer.getBundle());
@@ -111,12 +119,24 @@ public class DeployOSGIEJB3Bundle
 						try
 						{
 							dataSourceHelper.parseXmlDataSourceAndBindIt(new SAXReader().read(url.openStream()), context);
-						} catch (Exception e)
+						}
+						catch (Exception e)
 						{
 							logger.error(e.getMessage(), e);
 						}
 					}
 
+				}
+			}
+
+			Enumeration<URL> orms = bundleDeployer.getBundle().findEntries("/META-INF/", "orm.xml", true);
+
+			if (orms != null)
+			{
+				while (orms.hasMoreElements())
+				{
+					URL url = orms.nextElement();
+					deployer.addOrmXML(new OrmXML(multiBundleClassLoader, url.getPath()));
 				}
 			}
 
@@ -134,10 +154,12 @@ public class DeployOSGIEJB3Bundle
 						try
 						{
 							persistenceUnitInfoXml.fromInputStream(url.openStream());
-						} catch (DocumentException e)
+						}
+						catch (DocumentException e)
 						{
 							logger.error(e.getMessage(), e);
-						} catch (IOException e)
+						}
+						catch (IOException e)
 						{
 							logger.error(e.getMessage(), e);
 						}
@@ -156,15 +178,17 @@ public class DeployOSGIEJB3Bundle
 			{
 				while (ejbJarFiles.hasMoreElements())
 				{
-					URL url = (URL) ejbJarFiles.nextElement();
+					URL url = ejbJarFiles.nextElement();
 					EjbJarXml ejbJarXml = new EjbJarXml();
 					try
 					{
 						ejbJarXml.fromInputStream(url.openStream());
-					} catch (DocumentException e)
+					}
+					catch (DocumentException e)
 					{
 						logger.error(e.getMessage(), e);
-					} catch (IOException e)
+					}
+					catch (IOException e)
 					{
 						logger.error(e.getMessage(), e);
 					}
@@ -202,11 +226,13 @@ public class DeployOSGIEJB3Bundle
 						if (isEJB3Entity(clazz))
 						{
 							deployer.addEntity(clazz);
-						} else if (isEJB3Service(clazz))
+						}
+						else if (isEJB3Service(clazz))
 						{
 							deployer.addService(clazz, url);
 						}
-					} catch (Exception e)
+					}
+					catch (Exception e)
 					{
 						logger.error(e.getMessage(), e);
 					}
@@ -220,7 +246,8 @@ public class DeployOSGIEJB3Bundle
 						if (isEJB3Entity(clazz))
 						{
 							deployer.addEntity(clazz);
-						} else if (isEJB3Service(clazz))
+						}
+						else if (isEJB3Service(clazz))
 						{
 							deployer.addService(clazz, null);
 						}
@@ -254,17 +281,20 @@ public class DeployOSGIEJB3Bundle
 			classReader.accept(eJb3AnnotationVisitor, ClassReader.SKIP_CODE);
 
 			return eJb3AnnotationVisitor;
-		} catch (IOException e)
+		}
+		catch (IOException e)
 		{
 			logger.error(e.getMessage(), e);
-		} finally
+		}
+		finally
 		{
 			if (openStream != null)
 			{
 				try
 				{
 					openStream.close();
-				} catch (IOException e)
+				}
+				catch (IOException e)
 				{
 					logger.error(e.getMessage(), e);
 				}
@@ -299,7 +329,8 @@ public class DeployOSGIEJB3Bundle
 		if (serviceClass.isAnnotationPresent(Local.class))
 		{
 			return ((Local) serviceClass.getAnnotation(Local.class)).value()[0];
-		} else
+		}
+		else
 		{
 			for (Class type : serviceClass.getInterfaces())
 			{
@@ -318,7 +349,8 @@ public class DeployOSGIEJB3Bundle
 		if (serviceClass.isAnnotationPresent(Remote.class))
 		{
 			return ((Remote) serviceClass.getAnnotation(Remote.class)).value()[0];
-		} else
+		}
+		else
 		{
 			for (Class type : serviceClass.getInterfaces())
 			{
@@ -337,7 +369,8 @@ public class DeployOSGIEJB3Bundle
 		if (serviceClass.isAnnotationPresent(serviceAnnotationClass))
 		{
 			return true;
-		} else
+		}
+		else
 		{
 			for (Class type : serviceClass.getInterfaces())
 			{

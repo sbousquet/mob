@@ -35,23 +35,26 @@ import com.netappsid.mob.ejb3.JPAProvider;
 public class HibernateJPAProvider implements JPAProvider
 {
 	private static final Logger logger = Logger.getLogger(HibernateJPAProvider.class);
-	private Ejb3Configuration cfg;
+	private final Ejb3Configuration cfg;
 
 	public HibernateJPAProvider()
 	{
 		cfg = new Ejb3Configuration();
 	}
 
+	@Override
 	public void addAnnotatedClass(Class<?> entityClass)
 	{
 		cfg.addAnnotatedClass(entityClass);
 	}
 
+	@Override
 	public EntityManagerFactory buildEntityManagerFactory()
 	{
 		return cfg.buildEntityManagerFactory();
 	}
 
+	@Override
 	public void configure(PersistenceUnitInfo persistenceUnitInfo)
 	{
 		configureEventListeners();
@@ -185,5 +188,20 @@ public class HibernateJPAProvider implements JPAProvider
 		}
 
 		return merged.toArray(array1);
+	}
+
+	@Override
+	public void addResource(String path, ClassLoader classLoader)
+	{
+		ClassLoader current = Thread.currentThread().getContextClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
+		cfg.addResource(path, classLoader);
+		Thread.currentThread().setContextClassLoader(current);
+	}
+
+	@Override
+	public void addResource(String path)
+	{
+		cfg.addResource(path);
 	}
 }

@@ -33,6 +33,7 @@ import com.netappsid.mob.ejb3.internal.StatelessService;
 import com.netappsid.mob.ejb3.internal.interceptors.Interceptors;
 import com.netappsid.mob.ejb3.jndi.JNDIEntityManager;
 import com.netappsid.mob.ejb3.xml.EjbJarXml;
+import com.netappsid.mob.ejb3.xml.OrmXML;
 import com.netappsid.mob.ejb3.xml.PersistenceUnitInfoXml;
 
 /**
@@ -54,6 +55,7 @@ public class EJB3Deployer
 	private final Map<Class<?>, URL> ejb3Service = new HashMap<Class<?>, URL>();
 	private final List<Class<?>> entityClass = new ArrayList<Class<?>>();
 	private boolean deployed = false;
+	private final List<OrmXML> ormsXML = new ArrayList<OrmXML>();
 
 	private EjbJarXml ejbJarXml;
 
@@ -119,6 +121,11 @@ public class EJB3Deployer
 		}
 	}
 
+	public void addOrmXML(OrmXML ormXML)
+	{
+		ormsXML.add(ormXML);
+	}
+
 	public void deploy()
 	{
 		try
@@ -179,6 +186,11 @@ public class EJB3Deployer
 		for (Class<?> entity : entityClass)
 		{
 			provider.addAnnotatedClass(entity);
+		}
+
+		for (OrmXML ormXML : ormsXML)
+		{
+			provider.addResource(ormXML.getResource(), ormXML.getClassLoader());
 		}
 
 		persistenceUnitInfoXml.setClassLoader(classLoader);

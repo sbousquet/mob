@@ -13,8 +13,11 @@
 
 
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+		
 		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
 			<resource>
 				<targetPath>OSGI-INF</targetPath>
 				<directory>OSGI-INF</directory>

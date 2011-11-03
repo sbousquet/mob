@@ -38,6 +38,7 @@ public class DataSourceHelper
 		String uniqueRessourceName = dataSource.elementText("jndi-name");
 		String driverClassName = dataSource.elementText("driver-class");
 
+		LOGGER.debug("Using jdbc database :" + jdbcUrl);
 		DataSource ds = datasourceProvider.create(uniqueRessourceName, driverClassName, jdbcUrl, user, password);
 
 		rebindInitialContextToDataSource(context, uniqueRessourceName, ds);

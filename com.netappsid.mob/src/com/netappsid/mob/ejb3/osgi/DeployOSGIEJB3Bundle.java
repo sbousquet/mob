@@ -116,6 +116,7 @@ public class DeployOSGIEJB3Bundle
 
 					if (deployed.add(name))
 					{
+						logger.debug("Deploying using datasource xml file: " + path);
 						try
 						{
 							dataSourceHelper.parseXmlDataSourceAndBindIt(new SAXReader().read(url.openStream()), context);
@@ -124,6 +125,10 @@ public class DeployOSGIEJB3Bundle
 						{
 							logger.error(e.getMessage(), e);
 						}
+					}
+					else
+					{
+						logger.debug("Datasource xml file: " + path + " already deployed");
 					}
 
 				}

@@ -185,6 +185,7 @@ public class EJB3Deployer
 
 		for (Class<?> entity : entityClass)
 		{
+			LOGGER.debug("[ENTITY]: " + entity.getName());
 			provider.addAnnotatedClass(entity);
 		}
 
@@ -242,14 +243,18 @@ public class EJB3Deployer
 
 				if (DeployOSGIEJB3Bundle.isLocalService(serviceEntry.getKey()))
 				{
+					final String localServiceName = ejb3Service.getLocalInterface().getName();
 					serviceContext.rebind("local", ejb3Service);
-					osgiBundleContext.registerService(ejb3Service.getLocalInterface().getName(), ejb3Service.getProxy(), new Hashtable<String, Object>());
+					osgiBundleContext.registerService(localServiceName, ejb3Service.getProxy(), new Hashtable<String, Object>());
+					LOGGER.debug("[LOCAL SERVICE]: " + localServiceName);
 				}
 
 				if (DeployOSGIEJB3Bundle.isRemoteService(serviceEntry.getKey()))
 				{
+					final String remoteServiceName = ejb3Service.getRemoteInterface().getName();
 					serviceContext.rebind("remote", ejb3Service);
-					osgiBundleContext.registerService(ejb3Service.getRemoteInterface().getName(), ejb3Service.getProxy(), new Hashtable<String, Object>());
+					osgiBundleContext.registerService(remoteServiceName, ejb3Service.getProxy(), new Hashtable<String, Object>());
+					LOGGER.debug("[REMOTE SERVICE]: " + remoteServiceName);
 				}
 
 				bundleUnit.addService(ejb3Service);

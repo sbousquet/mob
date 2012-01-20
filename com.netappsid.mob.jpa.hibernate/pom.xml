@@ -81,7 +81,7 @@
 		<dependency>
 			<groupId>com.netappsid</groupId>
 			<artifactId>com.netappsid.org.hibernate</artifactId>
-			<version>3.3.2-GA</version>
+			<version>3.6.10</version>
 		</dependency>
 	</dependencies>
 

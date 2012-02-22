@@ -23,7 +23,4 @@
 		<module>com.netappsid.mob.jndi</module>
 		<module>com.netappsid.mob.jpa.hibernate</module>
 	</modules>
-
-
-
 </project>

@@ -107,14 +107,19 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.osgi</groupId>
-			<artifactId>org.eclipse.osgi</artifactId>
-			<version>3.6.0.v20100517</version>
-		</dependency>
-		<dependency>
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>org.eclipse.core.runtime</artifactId>
 			<version>3.6.0.v20100505</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>org.eclipse.osgi</artifactId>
+					<groupId>org.eclipse.osgi</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>org.eclipse.osgi.services</artifactId>
+					<groupId>org.eclipse.osgi</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.equinox</groupId>
@@ -140,6 +145,12 @@
 			<groupId>org.dom4j</groupId>
 			<artifactId>com.springsource.org.dom4j</artifactId>
 			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>4.2.0</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

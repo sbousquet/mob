@@ -29,10 +29,16 @@ public class FakeRemoteEJBServiceLink implements EJBServiceLink
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FakeRemoteEJBServiceLink.class);
 	private final PackageAdmin admin;
+	private boolean ignoreSerialization = false;
 
 	public FakeRemoteEJBServiceLink(PackageAdmin admin)
 	{
 		this.admin = admin;
+		String systemProperty = System.getProperty("ignoreSerialization");
+		if (systemProperty != null)
+		{
+			ignoreSerialization = Boolean.parseBoolean(systemProperty);
+		}
 	}
 
 	/*
@@ -45,7 +51,14 @@ public class FakeRemoteEJBServiceLink implements EJBServiceLink
 	{
 		try
 		{
-			return serializeDeserialize(args);
+			if (ignoreSerialization)
+			{
+				return args;
+			}
+			else
+			{
+				return serializeDeserialize(args);
+			}
 		}
 		catch (Exception e)
 		{
@@ -64,7 +77,14 @@ public class FakeRemoteEJBServiceLink implements EJBServiceLink
 	{
 		try
 		{
-			return serializeDeserialize(result)[0];
+			if (ignoreSerialization)
+			{
+				return result;
+			}
+			else
+			{
+				return serializeDeserialize(result)[0];
+			}
 		}
 		catch (Exception e)
 		{
